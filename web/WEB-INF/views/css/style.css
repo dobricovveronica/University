@@ -1,0 +1,15 @@
+
+#search{
+    background-color: whitesmoke;
+}
+input{
+    position: relative;
+}
+#add{
+    background: url("/WEB-INF/resources/images/plus1.png");
+    width: 50px;
+    height: 30px;
+}
+#deletePhone{
+
+}
