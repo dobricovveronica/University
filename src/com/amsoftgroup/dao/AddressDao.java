@@ -73,19 +73,22 @@ public class AddressDao {
         }
     }
 
-    public void insert(String country, String city, String address) {
-        String sql = "INSERT INTO university.addresses VALUES(?,?,?)";
-
+    public Long insert(Address address) {
+        String sql = "INSERT INTO university.addresses VALUES(?,?,?) returning id";
+        Long address_id = 0L;
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, country);
-            statement.setString(2, city);
-            statement.setString(3, address);
+            statement.setString(1, address.getCountry());
+            statement.setString(2, address.getCity());
+            statement.setString(3, address.getAddress());
             System.out.println(statement.toString());
-            statement.execute();
+            ResultSet rs = statement.executeQuery();
+            rs.next();
+            address_id = rs.getLong(1);
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return  address_id;
     }
 }

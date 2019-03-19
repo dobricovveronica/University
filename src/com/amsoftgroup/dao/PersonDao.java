@@ -94,9 +94,9 @@ public class PersonDao {
 //            e.printStackTrace();
 //        }
 //    }
-    public void insert(Person person) {
-        String sql = "INSERT INTO university.persons VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
-
+    public Long insert(Person person) {
+        String sql = "INSERT INTO university.persons VALUES(?, ?, ?, ?, ?, ?, ?, ?) returning id";
+        Long person_id = 0L;
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, person.getFirstName());
@@ -108,11 +108,14 @@ public class PersonDao {
             statement.setLong(7, person.getAddresses().getId());
             statement.setLong(8, person.getLibraryAbonament().getId());
             System.out.println(statement.toString());
-            statement.execute();
+            ResultSet rs = statement.executeQuery();
+            rs.next();
+            person_id = rs.getLong(1);
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return  person_id;
     }
 
     public Set<Person> getAllPersons() {
