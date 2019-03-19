@@ -12,24 +12,23 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Add / Edit Student</title>
+    <title>Add Student</title>
     <style>
         <%@include file="/WEB-INF/views/css/bootstrap.min.css" %>
         <%@include file="/WEB-INF/views/css/style.css" %>
     </style>
 </head>
 <body>
-<h1>Add / Edit Student</h1>
+<h1>Add Student</h1>
 <form method="post">
-    <%Student student = (Student) request.getAttribute("student"); %>
+    <%--    <%Student student = (Student) request.getAttribute("student"); %>--%>
 
     <div class="form-group row">
         <div class="col-1">
             <label class="col-sm-2 col-form-label">FirstName:</label>
         </div>
         <div class="col-3">
-            <input type="text" class="form-control" placeholder="First name" name="first_name"
-                   value="<%=student.getFirstName()%>">
+            <input type="text" class="form-control" placeholder="First name" name="first_name" value="">
         </div>
         <div class="col-1"></div>
         <div class="col-1">
@@ -37,8 +36,7 @@
         </div>
         <div class="col-2">
             <select class="form-control">
-                <option selected><%=student.getGroup().getName()%>
-                </option>
+                <option selected>Group</option>
                 <% Set<Group> groups = (Set<Group>) request.getAttribute("groups");
                     for (Group group : groups) {
                 %>
@@ -54,8 +52,7 @@
                 <label class="col-sm-2 col-form-label">LastName:</label>
             </div>
             <div class="col-3">
-                <input type="text" class="form-control" placeholder="Last name" name="last_name"
-                       value="<%=student.getLastName()%>">
+                <input type="text" class="form-control" placeholder="Last name" name="last_name" value="">
             </div>
         </div>
         <div class="form-group row">
@@ -63,8 +60,7 @@
                 <label class="col-3 col-form-label">Date:</label>
             </div>
             <div class="col-3">
-                <input type="date" class="form-control" name="date_of_birth" placeholder="Date of birth"
-                       value="<%=student.getDateOfBirth()%>">
+                <input type="date" class="form-control" name="date_of_birth" placeholder="Date of birth" value="">
             </div>
         </div>
         <div class="form-row">
@@ -83,8 +79,7 @@
                 <label class="col-sm-2 col-form-label">Country:</label>
             </div>
             <div class="col-3">
-                <input type="text" class="form-control" placeholder="Country" name="country"
-                       value="<%=student.getAddresses().getCountry()%>">
+                <input type="text" class="form-control" placeholder="Country" name="country" value="">
             </div>
         </div>
         <br>
@@ -93,8 +88,7 @@
                 <label class="col-sm-2 col-form-label">City:</label>
             </div>
             <div class="col-3">
-                <input type="text" class="form-control" placeholder="City" name="city"
-                       value="<%=student.getAddresses().getCity()%>">
+                <input type="text" class="form-control" placeholder="City" name="city" value="">
             </div>
         </div>
         <br>
@@ -103,8 +97,7 @@
                 <label class="col-sm-2 col-form-label">Address:</label>
             </div>
             <div class="col-3">
-                <input type="text" class="form-control" placeholder="Address" name="address"
-                       value="<%=student.getAddresses().getAddress()%>">
+                <input type="text" class="form-control" placeholder="Address" name="address" value="">
             </div>
         </div>
         <br>
@@ -119,7 +112,7 @@
                     <% Set<PhoneType> phoneTypes = (Set<PhoneType>) request.getAttribute("phoneTypes");
                         for (PhoneType phoneType : phoneTypes) {
                     %>
-                    <option name="phone_type"><%=phoneType.getName()%>
+                    <option name="phone_type" value="<%=phoneType.getId()%>"><%=phoneType.getName()%>
                     </option>
                     <%}%>
                 </select>
@@ -143,9 +136,10 @@
     <div class="form-row">
         <div class="col-6"></div>
         <div class="col-2">
-            <button type="submit" class="btn btn-secondary btm-sm">Save</button>
 
-            <button type="submit" class="btn btn-secondary btm-sm">Cancel</button>
+            <button type="submit" class="btn btn-secondary btm-sm" onclick="alert('Studentul a fost adaugat!')">Save</button>
+
+            <button type="reset" class="btn btn-secondary btm-sm">Cancel</button>
         </div>
     </div>
 </form>

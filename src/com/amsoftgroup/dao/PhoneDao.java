@@ -70,19 +70,22 @@ public class PhoneDao {
         }
     }
 
-    public void insert(Phone phone) {
-        String sql = "INSERT INTO university.phones VALUES(?, ?)";
+    public Long insert(Phone phone) {
+        Long phone_id = 0L;
+        String sql = "INSERT INTO university.phones VALUES(?, ?) returning id ";
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
 //            PreparedStatement statement1 = connection.prepareStatement(condition);
             statement.setLong(1, phone.getPhoneType().getId());
             statement.setString(2, phone.getValue());
             System.out.println(statement.toString());
-            statement.execute();
-
+            ResultSet rs = statement.executeQuery();
+            rs.next();
+            phone_id = rs.getLong(1);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return phone_id;
     }
 
     public Set<Phone> getPhonesById(Long studentId) {

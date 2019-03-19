@@ -5,7 +5,11 @@ import com.amsoftgroup.model.*;
 import com.amsoftgroup.utilitys.DataBaseConnection;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Set;
 
 public class StudentService {
@@ -17,6 +21,8 @@ public class StudentService {
     private TeacherDao teacherDao;
     private LibraryAbonamentDao libraryAbonamentDao;
     private MarkDao markDao;
+    private AddressDao addressDao;
+    private PhoneDao phoneDao;
 
     public StudentService() {
         Connection connection = DataBaseConnection.initializeDatabaseConnection();
@@ -27,6 +33,8 @@ public class StudentService {
         this.teacherDao = new TeacherDao(connection);
         this.libraryAbonamentDao = new LibraryAbonamentDao(connection);
         this.markDao = new MarkDao(connection);
+        this.addressDao = new AddressDao(connection);
+        this.phoneDao = new PhoneDao(connection);
 
     }
 
@@ -38,7 +46,7 @@ public class StudentService {
     }
 
     public Set<Group> getAllGroups() {
-        return groupDao.getAllGroups();
+       return groupDao.getAllGroups();
     }
 
     public Set<Discipline> getAllDisciplines() {
@@ -63,28 +71,35 @@ public class StudentService {
 
 //    public void studentUpdate() { return; studentDao.update();}
 
-    //    public void deleteStudent(){return studentDao.delete();}
     public Student getStudentById(Long id) {
         return studentDao.getStudentById(id);
     }
 
-//    public LibraryAbonament getAbonamentById(Long id){return libraryAbonamentDao.getAbonamentById(id);}
+    public void addNewStudent(String country, String city, String address, Long type_id, String value, String first_name,
+                              String last_name, LocalDate date_of_birth, Long group_id, String gender) {
+
+        addressDao.insert(country, city, address);
+        libraryAbonamentDao.insert();
+//        phoneDao.insert(phone);
+//        studentDao.insert(first_name, last_name, date_of_birth, group_id, gender);
+
+    }
 
 //    public Mark getMarkByStudentId(Long id){return markDao.getMarkByStudentId(id);}
 //
 //    public void  addMarkByStudentId(Mark mark, Long id){markDao.insert(mark, id);}
 //
-//    public void  addNewStudent(Student student){ studentDao.insert(student);}
 
-    //    public void deleteStudent(ArrayList list){
-//        Long id;
-//       for (int i=0; i<list.size(); i++){
-//           id = Long.parseLong(String.valueOf(list.get(i)));
-//           studentDao.delete(id);
-//       }
-//
-//        }
-    public void deleteStudent(Long id) {
-        studentDao.delete(id);
+    public void deleteStudent(String[] list) {
+        Long id;
+        for (int i = 0; i < list.length; i++) {
+            id = Long.parseLong(list[i]);
+            studentDao.delete(id);
         }
+
+    }
+//    public void deleteStudent(Long id) {
+//        studentDao.delete(id);
+//        }
+
 }

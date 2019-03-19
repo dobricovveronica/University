@@ -86,14 +86,14 @@ public class LibraryAbonamentDao {
 //        }
 //    }
 
-    public void insert(LibraryAbonament libraryAbonament) {
-        String sql = "INSERT INTO university.library_abonaments VALUES(?, ?, ?)";
+    public void insert() {
+        String sql = "INSERT INTO university.library_abonaments(status) VALUES(?)";
 
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, libraryAbonament.getStatus());
-            statement.setDate(2, Date.valueOf(libraryAbonament.getStartDate()));
-            statement.setDate(3, Date.valueOf(libraryAbonament.getEndDate()));
+            statement.setString(1, "None");
+//            statement.setDate(2, Date.valueOf(libraryAbonament.getStartDate()));
+//            statement.setDate(3, Date.valueOf(libraryAbonament.getEndDate()));
             System.out.println(statement.toString());
             statement.execute();
 

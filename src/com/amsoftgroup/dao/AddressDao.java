@@ -73,14 +73,14 @@ public class AddressDao {
         }
     }
 
-    public void insert(Address address) {
-        String sql = "INSERT INTO university.addresses VALUES(?,?,?) returning id";
+    public void insert(String country, String city, String address) {
+        String sql = "INSERT INTO university.addresses VALUES(?,?,?)";
 
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, address.getCountry());
-            statement.setString(2, address.getCity());
-            statement.setString(3, address.getAddress());
+            statement.setString(1, country);
+            statement.setString(2, city);
+            statement.setString(3, address);
             System.out.println(statement.toString());
             statement.execute();
 

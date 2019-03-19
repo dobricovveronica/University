@@ -6,6 +6,7 @@ import com.amsoftgroup.dao.*;
 
 import java.sql.*;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -67,21 +68,12 @@ public class StudentDao {
     }
 
     public void insert(Student student) {
-        String sql = "INSERT INTO university.students VALUES(?)";
+        String sql = "insert university.students values(?, ?)";
 
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setLong(1, student.getGroup().getId());
-//            statement.setString(1, student.getFirstName());
-//            statement.setString(2, student.getLastName());
-//            statement.setDate(3, Date.valueOf(student.getDateOfBirth()));
-////            statement.setString(4, student.getGender().charAt(0));
-//            statement.setString(4, student.getAddresses().getCountry());
-//            statement.setString(5, student.getAddresses().getCity());
-//            statement.setString(6, student.getAddresses().getAddress());
-////            statement.setString(8, student.getPhones());
-//            statement.setString(7, student.getGroup().getName());
-
+            statement.setLong(2, student.getId());
             System.out.println(statement.toString());
             statement.execute();
 
@@ -89,7 +81,6 @@ public class StudentDao {
             e.printStackTrace();
         }
     }
-
     public Set<Student> getAllStudents() {
         String sql = "select P.id, " +
                 "P.first_name, " +

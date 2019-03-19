@@ -9,9 +9,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import java.time.LocalDate;
+import java.util.*;
 
 import static java.util.Objects.isNull;
 
@@ -28,33 +27,52 @@ public class StudentServlet extends HttpServlet {
 
         RequestDispatcher requestDispatcher;
 
-
+        Person person = new Person();
         Student student = new Student();
+        Address address = new Address();
+        LibraryAbonament libraryAbonament = new LibraryAbonament();
         Mark mark = new Mark();
         Long studentId;
-        LibraryAbonament libraryAbonament;
+
 
         switch (action){
-            case "ADD_MARK":
-                studentId = Long.parseLong(request.getParameter("studentId"));
-                student = studentService.getStudentById(studentId);
+//            case "ADD_MARK":
+//                studentId = Long.parseLong(request.getParameter("studentId"));
+//                student = studentService.getStudentById(studentId);
+//
+//                requestDispatcher = getServletContext().getRequestDispatcher("/WEB-INF/views/mark.jsp");
+//                requestDispatcher.forward(request, response);
+//                break;
+            case "ADD_STUDENT":
 
-                requestDispatcher = getServletContext().getRequestDispatcher("/WEB-INF/views/mark.jsp");
+                address.setCountry(request.getParameter("country"));
+                address.setCity(request.getParameter("city"));
+                address.setAddress(request.getParameter("address"));
+
+                person.setFirstName(request.getParameter("first_name"));
+                person.setLastName(request.getParameter("last_name"));
+                person.setDateOfBirth(LocalDate.parse(String.valueOf(request.getParameter("date_of_birth"))));
+                person.setGender(request.getParameter("gender").charAt(0));
+
+               student.getGroup().setId(Long.parseLong(request.getParameter("group_id")));
+
+                Long type_id = Long.parseLong(request.getParameter("phone_type"));
+                String phone = request.getParameter("phone");
+
+//                studentService.addNewStudent();
+                requestDispatcher = getServletContext().getRequestDispatcher("/WEB-INF/views/addStudent.jsp");
                 requestDispatcher.forward(request, response);
                 break;
-            case "ADD_STUDENT":
-//                studentId = Long.parseLong(request.getParameter("studentId"));
-//                student = studentService.addNewStudent();
-            case "DELETE":
-                studentId = Long.parseLong(request.getParameter("check"));
-                studentService.deleteStudent(studentId);
-//                ArrayList<String> studentsId = new  ArrayList<String>();
-//                studentsId = ;
-//                studentService.deleteStudent(studentsId);
 
-                action = "LIST";
-                request.setAttribute("action",action);
-                doGet(request,response);
+            case "DELETE":
+               String[] studentsId = new  String[request.getParameterValues("check[]").length];
+                studentsId = request.getParameterValues("check[]");
+                studentService.deleteStudent(studentsId);
+
+//                action = "LIST";
+//                request.
+//                request.setAttribute("action",action);
+//                doGet(request,response);
 
 //                requestDispatcher = getServletContext().getRequestDispatcher("/WEB-INF/views/list.jsp");
 //                requestDispatcher.forward(request, response);
@@ -125,7 +143,16 @@ public class StudentServlet extends HttpServlet {
                 req.setAttribute("student", student);
                 libraryAbonaments = studentService.getAllAbonaments();
                 req.setAttribute("libraryAbonaments", libraryAbonaments);
-                                requestDispatcher = getServletContext().getRequestDispatcher("/WEB-INF/views/abonament.jsp");
+                requestDispatcher = getServletContext().getRequestDispatcher("/WEB-INF/views/abonament.jsp");
+                requestDispatcher.forward(req, resp);
+                break;
+            case "ADD_STUDENT":
+
+                groups = studentService.getAllGroups();
+                req.setAttribute("groups", groups);
+                phoneTypes = studentService.getAllPhoneTypes();
+                req.setAttribute("phoneTypes", phoneTypes);
+                requestDispatcher = getServletContext().getRequestDispatcher("/WEB-INF/views/addStudent.jsp");
                 requestDispatcher.forward(req, resp);
                 break;
 
