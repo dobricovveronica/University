@@ -17,7 +17,7 @@ public class DisciplineDao {
         this.connection = connection;
     }
 
-    public Set<Discipline> get() {
+    public Set<Discipline> getDiscipline() {
         String sql = "SELECT * FROM university.disciplines ";
         Set<Discipline> disciplines = new HashSet<>();
         try {
@@ -39,7 +39,7 @@ public class DisciplineDao {
         return disciplines;
     }
 
-    public void delete(Discipline discipline) {
+    public void deleteDiscipline(Discipline discipline) {
         String sql = "DELETE FROM university.disciplines where id = ?";
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
@@ -52,7 +52,7 @@ public class DisciplineDao {
         }
     }
 
-    public void update(Discipline discipline) {
+    public void updateDiscipline(Discipline discipline) {
         String sql = "UPDATE university.disciplines SET title=?, teacher_id=? where id = ?";
 
         try {
@@ -68,7 +68,7 @@ public class DisciplineDao {
         }
     }
 
-    public void insert(Discipline discipline) {
+    public void insertDiscipline(Discipline discipline) {
         String sql = "INSERT INTO university.disciplines VALUES(?, ?)";
         try {
             PreparedStatement statement = connection.prepareStatement(sql);

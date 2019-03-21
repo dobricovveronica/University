@@ -18,7 +18,7 @@ public class AverageDao {
         this.connection = connection;
     }
 
-    public Set<Average> get() {
+    public Set<Average> getAverage() {
         String sql = "SELECT * FROM university.averages ";
         Set<Average> averages = new HashSet<>();
         try {
@@ -41,7 +41,7 @@ public class AverageDao {
         return averages;
     }
 
-    public void delete(Average average) {
+    public void deleteAverage(Average average) {
         String sql = "DELETE FROM university.averages where id = ?";
 
         try {
@@ -55,7 +55,7 @@ public class AverageDao {
         }
     }
 
-    public void update(Average average) {
+    public void updateAverage(Average average) {
         String sql = "UPDATE university.averages SET student_id=?, discipline_id=?, value=? where id = ?";
 
         try {
@@ -72,7 +72,7 @@ public class AverageDao {
         }
     }
 
-    public void insert(Average average) {
+    public void insertAverage(Average average) {
         String sql = "INSERT INTO university.averages VALUES(?, ?, ?)";
 
         try {

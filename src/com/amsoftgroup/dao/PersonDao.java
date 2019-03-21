@@ -3,6 +3,7 @@ package com.amsoftgroup.dao;
 import com.amsoftgroup.model.Address;
 import com.amsoftgroup.model.LibraryAbonament;
 import com.amsoftgroup.model.Person;
+import com.amsoftgroup.model.Phone;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -17,7 +18,7 @@ public class PersonDao {
         this.connection = connection;
     }
 
-    public Set<Person> get() {
+    public Set<Person> getPerson() {
         String sql = "SELECT * FROM university.persons ";
         Set<Person> persons = new HashSet<>();
         try {
@@ -45,7 +46,7 @@ public class PersonDao {
         return persons;
     }
 
-    public void delete(Person person) {
+    public void deletePerson(Person person) {
         String sql = "DELETE FROM university.persons where id = ?";
 
         try {
@@ -59,7 +60,7 @@ public class PersonDao {
         }
     }
 
-    public void update(Person person) {
+    public void updatePerson(Person person) {
         String sql = "UPDATE university.persons SET first_name=?, last_name=?, date_of_birth=?, gender=?, picture=?, mail=?, address_id=?, library_abonament_id=? where id = ?";
 
         try {
@@ -94,7 +95,7 @@ public class PersonDao {
 //            e.printStackTrace();
 //        }
 //    }
-    public Long insert(Person person) {
+    public Long insertPerson(Person person) {
         String sql = "INSERT INTO university.persons VALUES(?, ?, ?, ?, ?, ?, ?, ?) returning id";
         Long person_id = 0L;
         try {

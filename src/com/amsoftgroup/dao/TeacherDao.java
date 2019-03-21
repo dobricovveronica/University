@@ -18,7 +18,7 @@ public class TeacherDao {
         this.connection = connection;
     }
 
-    public Set<Teacher> get() {
+    public Set<Teacher> getTeacher() {
         String sql = "SELECT * FROM university.teachers ";
         Set<Teacher> teachers = new HashSet<>();
         try {
@@ -39,7 +39,7 @@ public class TeacherDao {
         return teachers;
     }
 
-    public void delete(Teacher teacher) {
+    public void deleteTeacher(Teacher teacher) {
         String sql = "DELETE FROM university.teachers where id = ?";
 
         try {
@@ -53,7 +53,7 @@ public class TeacherDao {
         }
     }
 
-    public void update(Teacher teacher) {
+    public void updateTeacher(Teacher teacher) {
         String sql = "UPDATE university.teachers SET salary=? where id = ?";
 
         try {
@@ -68,7 +68,7 @@ public class TeacherDao {
         }
     }
 
-    public void insert(Teacher teacher) {
+    public void insertTeacher(Teacher teacher) {
         String sql = "INSERT INTO university.teachers VALUES(?)";
 
         try {

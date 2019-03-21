@@ -17,7 +17,7 @@ public class GroupDao {
         this.connection = connection;
     }
 
-    public Set<Group> get() {
+    public Set<Group> getGroup() {
         String sql = "SELECT * FROM university.groups ";
         Set<Group> groups = new HashSet<>();
         try {
@@ -38,7 +38,7 @@ public class GroupDao {
         return groups;
     }
 
-    public void delete(Group group) {
+    public void deleteGroup(Group group) {
         String sql = "DELETE FROM university.groups where id = ?";
 
         try {
@@ -52,7 +52,7 @@ public class GroupDao {
         }
     }
 
-    public void update(Group group) {
+    public void updateGroup(Group group) {
         String sql = "UPDATE university.groups SET name=? where id = ?";
 
         try {
@@ -67,7 +67,7 @@ public class GroupDao {
         }
     }
 
-    public void insert(Group group) {
+    public void insertGroup(Group group) {
         String sql = "INSERT INTO university.groups VALUES(?)";
 
         try {

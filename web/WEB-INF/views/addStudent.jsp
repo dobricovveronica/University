@@ -17,6 +17,13 @@
         <%@include file="/WEB-INF/views/css/bootstrap.min.css" %>
         <%@include file="/WEB-INF/views/css/style.css" %>
     </style>
+    <script>
+        function closeWindow() {
+            setTimeout(function() {
+                window.close();
+            }, 3000);
+        }
+    </script>
 </head>
 <body>
 <h1>Add Student</h1>
@@ -35,12 +42,12 @@
             <label class="col-sm-2 col-form-label">Group:</label>
         </div>
         <div class="col-2">
-            <select class="form-control">
-                <option selected>Group</option>
+            <select name="group" class="form-control">
+                <option selected >Group</option>
                 <% Set<Group> groups = (Set<Group>) request.getAttribute("groups");
                     for (Group group : groups) {
                 %>
-                <option name="group_id" value="<%=group.getId()%>"><%=group.getName()%>
+                <option value="<%=group.getId()%>"><%=group.getName()%>
                 </option>
                 <%}%>
             </select>
@@ -106,13 +113,13 @@
                 <label class="col-sm-2 col-form-label">Phone(s):</label>
             </div>
             <div class="col-1">
-                <select class="form-control">
+                <select class="form-control" name="phone_type">
                     <option selected>All</option>
 
                     <% Set<PhoneType> phoneTypes = (Set<PhoneType>) request.getAttribute("phoneTypes");
                         for (PhoneType phoneType : phoneTypes) {
                     %>
-                    <option name="phone_type" value="<%=phoneType.getId()%>"><%=phoneType.getName()%>
+                    <option  value="<%=phoneType.getId()%>"><%=phoneType.getName()%>
                     </option>
                     <%}%>
                 </select>
@@ -136,8 +143,7 @@
     <div class="form-row">
         <div class="col-6"></div>
         <div class="col-2">
-
-            <button type="submit" class="btn btn-secondary btm-sm" onclick="alert('Studentul a fost adaugat!')">Save</button>
+            <button type="submit" class="btn btn-secondary btm-sm" onclick=closeWindow()>Save</button>
 
             <button type="reset" class="btn btn-secondary btm-sm">Cancel</button>
         </div>

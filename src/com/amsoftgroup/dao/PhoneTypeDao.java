@@ -17,7 +17,7 @@ public class PhoneTypeDao {
         this.connection = connection;
     }
 
-    public Set<PhoneType> get() {
+    public Set<PhoneType> getPhoneType() {
         String sql = "SELECT * FROM university.phone_types ";
         Set<PhoneType> phoneTypes = new HashSet<>();
         try {
@@ -38,7 +38,7 @@ public class PhoneTypeDao {
         return phoneTypes;
     }
 
-    public void delete(PhoneType phoneType) {
+    public void deletePhoneType(PhoneType phoneType) {
         String sql = "DELETE FROM university.phone_types where id = ?";
 
         try {
@@ -52,7 +52,7 @@ public class PhoneTypeDao {
         }
     }
 
-    public void update(PhoneType phoneType) {
+    public void updatePhoneType(PhoneType phoneType) {
         String sql = "UPDATE university.phone_types SET name=? where id = ?";
 
         try {
@@ -67,7 +67,7 @@ public class PhoneTypeDao {
         }
     }
 
-    public void insert(PhoneType phoneType) {
+    public void insertPhoneType(PhoneType phoneType) {
         String sql = "INSERT INTO university.phone_types VALUES(?)";
 
         try {

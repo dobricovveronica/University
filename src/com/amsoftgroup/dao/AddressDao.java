@@ -19,7 +19,7 @@ public class AddressDao {
         this.connection = connection;
     }
 
-    public Set<Address> get() {
+    public Set<Address> getAddress() {
         String sql = "SELECT * FROM university.addresses ";
         Set<Address> addresses = new HashSet<>();
         try {
@@ -42,7 +42,7 @@ public class AddressDao {
         return addresses;
     }
 
-    public void delete(Address address) {
+    public void deleteAddress(Address address) {
         String sql = "DELETE FROM university.addresses where id = ?";
 
         try {
@@ -56,7 +56,7 @@ public class AddressDao {
         }
     }
 
-    public void update(Address address) {
+    public void updateAddress(Address address) {
         String sql = "UPDATE university.addresses SET country=?, city=?, address=? where id = ?";
 
         try {
@@ -73,7 +73,7 @@ public class AddressDao {
         }
     }
 
-    public Long insert(Address address) {
+    public Long insertAddress(Address address) {
         String sql = "INSERT INTO university.addresses VALUES(?,?,?) returning id";
         Long address_id = 0L;
         try {

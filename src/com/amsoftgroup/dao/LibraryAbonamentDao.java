@@ -16,7 +16,7 @@ public class LibraryAbonamentDao {
         this.connection = connection;
     }
 
-    public Set<LibraryAbonament> get() {
+    public Set<LibraryAbonament> getLibraryAbonament() {
         String sql = "SELECT * FROM university.library_abonaments ";
         Set<LibraryAbonament> libraryAbonaments = new HashSet<>();
         try {
@@ -39,7 +39,7 @@ public class LibraryAbonamentDao {
         return libraryAbonaments;
     }
 
-    public void delete(LibraryAbonament libraryAbonament) {
+    public void deleteLibraryAbonament(LibraryAbonament libraryAbonament) {
         String sql = "DELETE FROM university.library_abonaments where id = ?";
 
         try {
@@ -53,7 +53,7 @@ public class LibraryAbonamentDao {
         }
     }
 
-    public void update(LibraryAbonament libraryAbonament) {
+    public void updateLibraryAbonament(LibraryAbonament libraryAbonament) {
         String sql = "UPDATE university.library_abonaments SET status=?, start_date=?, end_date=? where id = ?";
 
         try {
@@ -86,20 +86,22 @@ public class LibraryAbonamentDao {
 //        }
 //    }
 
-    public void insert() {
-        String sql = "INSERT INTO university.library_abonaments(status) VALUES(?)";
-
+    public Long insertLibraryAbonament(LibraryAbonament libraryAbonament) {
+        String sql = "INSERT INTO university.library_abonaments VALUES(?) returning id";
+        Long libraryAbonamentId = 0L;
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, "None");
-//            statement.setDate(2, Date.valueOf(libraryAbonament.getStartDate()));
-//            statement.setDate(3, Date.valueOf(libraryAbonament.getEndDate()));
+//            statement.setDate(2, null);
+//            statement.setDate(3, null);
             System.out.println(statement.toString());
-            statement.execute();
-
+            ResultSet rs = statement.executeQuery();
+            rs.next();
+            libraryAbonamentId = rs.getLong(1);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return libraryAbonamentId;
     }
 
     public Set<LibraryAbonament> getAllAbonaments() {
@@ -131,11 +133,11 @@ public class LibraryAbonamentDao {
             System.out.println(statement.toString());
             statement.setLong(1, id);
             ResultSet rs = statement.executeQuery();
-                libraryAbonament.setId(Long.parseLong(rs.getString("id")));
-                libraryAbonament.setStatus(rs.getString("status"));
-                libraryAbonament.setStartDate(LocalDate.parse(String.valueOf(rs.getDate("start_date"))));
-                libraryAbonament.setEndDate(LocalDate.parse(String.valueOf(rs.getDate("end_date"))));
-                System.out.println(rs.getLong("id") + " " + rs.getString("status") + " " + rs.getDate("start_date") + " " + rs.getDate("end_date"));
+            libraryAbonament.setId(Long.parseLong(rs.getString("id")));
+            libraryAbonament.setStatus(rs.getString("status"));
+            libraryAbonament.setStartDate(LocalDate.parse(String.valueOf(rs.getDate("start_date"))));
+            libraryAbonament.setEndDate(LocalDate.parse(String.valueOf(rs.getDate("end_date"))));
+            System.out.println(rs.getLong("id") + " " + rs.getString("status") + " " + rs.getDate("start_date") + " " + rs.getDate("end_date"));
 
         } catch (SQLException e) {
             e.printStackTrace();

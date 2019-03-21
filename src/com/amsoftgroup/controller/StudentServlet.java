@@ -31,20 +31,28 @@ public class StudentServlet extends HttpServlet {
         Student student = new Student();
         Address address = new Address();
         LibraryAbonament libraryAbonament = new LibraryAbonament();
+        Phone phone = new Phone();
         Mark mark = new Mark();
-        Long studentId;
+        Group group = new Group();
+        Discipline discipline = new Discipline();
+        Teacher teacher = new Teacher();
+        PhoneType phoneType = new PhoneType();
 
+        switch (action) {
 
-        switch (action){
-//            case "ADD_MARK":
-//                studentId = Long.parseLong(request.getParameter("studentId"));
-//                student = studentService.getStudentById(studentId);
-//
+            case "MARK":
+                student.setId(Long.parseLong(request.getParameter("studentId")));
+                teacher.setId(Long.parseLong(request.getParameter("teacher")));
+                discipline.setId(Long.parseLong(request.getParameter("discipline")));
+                mark.setStudent(student);
+                mark.setTeacher(teacher);
+                mark.setDiscipline(discipline);
+                mark.setValue(Double.parseDouble(request.getParameter("mark")));
+                studentService.addMarkByStudentId(mark);
 //                requestDispatcher = getServletContext().getRequestDispatcher("/WEB-INF/views/mark.jsp");
 //                requestDispatcher.forward(request, response);
-//                break;
+                break;
             case "ADD_STUDENT":
-
                 address.setCountry(request.getParameter("country"));
                 address.setCity(request.getParameter("city"));
                 address.setAddress(request.getParameter("address"));
@@ -54,18 +62,25 @@ public class StudentServlet extends HttpServlet {
                 person.setDateOfBirth(LocalDate.parse(String.valueOf(request.getParameter("date_of_birth"))));
                 person.setGender(request.getParameter("gender").charAt(0));
 
-               student.getGroup().setId(Long.parseLong(request.getParameter("group_id")));
+                Set <Phone> phones = new HashSet<>();
+                phoneType.setId(Long.parseLong(request.getParameter("phone_type")));
+                phone.setPhoneType(phoneType);
+                phone.setValue(request.getParameter("phone"));
+                phones.add(phone);
+                libraryAbonament.setStatus("None");
+                group.setId(Long.parseLong(request.getParameter("group")));
 
-                Long type_id = Long.parseLong(request.getParameter("phone_type"));
-                String phone = request.getParameter("phone");
+                person.setAddresses(address);
+                person.setPhones(phones);
+                person.setLibraryAbonament(libraryAbonament);
 
-//                studentService.addNewStudent();
-                requestDispatcher = getServletContext().getRequestDispatcher("/WEB-INF/views/addStudent.jsp");
-                requestDispatcher.forward(request, response);
+                studentService.addNewStudent(person, group);
+//                requestDispatcher = getServletContext().getRequestDispatcher("/WEB-INF/views/addStudent.jsp");
+//                requestDispatcher requestDispatcher.forward(request, response);
                 break;
 
             case "DELETE":
-               String[] studentsId = new  String[request.getParameterValues("check[]").length];
+                String[] studentsId = new String[request.getParameterValues("check[]").length];
                 studentsId = request.getParameterValues("check[]");
                 studentService.deleteStudent(studentsId);
 
@@ -130,7 +145,7 @@ public class StudentServlet extends HttpServlet {
                 studentId = Long.parseLong(req.getParameter("studentId"));
                 student = studentService.getStudentById(studentId);
                 req.setAttribute("student", student);
-                disciplines = studentService.getAllDisciplines();
+                disciplines = studentService.getDisciplineById(studentId);
                 req.setAttribute("disciplines", disciplines);
                 Set<Teacher> teachers = studentService.getAllTeacher();
                 req.setAttribute("teachers", teachers);

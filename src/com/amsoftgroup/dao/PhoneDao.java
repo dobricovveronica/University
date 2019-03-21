@@ -1,5 +1,6 @@
 package com.amsoftgroup.dao;
 
+import com.amsoftgroup.model.Person;
 import com.amsoftgroup.model.Phone;
 import com.amsoftgroup.model.PhoneType;
 
@@ -18,7 +19,7 @@ public class PhoneDao {
         this.connection = connection;
     }
 
-    public Set<Phone> get() {
+    public Set<Phone> getPhone() {
         String sql = "SELECT * FROM university.phones ";
         Set<Phone> phones = new HashSet<>();
         try {
@@ -32,7 +33,7 @@ public class PhoneDao {
                 phone.getPhoneType().setId(Long.parseLong(rs.getString("type_id")));
                 phone.setValue(rs.getString("value"));
                 phones.add(phone);
-                System.out.println(rs.getLong("id") + " " + rs.getLong("type_id")+ " " + rs.getString("name"));
+                System.out.println(rs.getLong("id") + " " + rs.getLong("type_id") + " " + rs.getString("name"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -40,7 +41,7 @@ public class PhoneDao {
         return phones;
     }
 
-    public void delete(Phone phone) {
+    public void deletePhone(Phone phone) {
         String sql = "DELETE FROM university.phones where id = ?";
 
         try {
@@ -54,7 +55,7 @@ public class PhoneDao {
         }
     }
 
-    public void update(Phone phone) {
+    public void updatePhone(Phone phone) {
         String sql = "UPDATE university.phones SET type_id = ?, value=? where id = ?";
 
         try {
@@ -70,7 +71,7 @@ public class PhoneDao {
         }
     }
 
-    public Long insert(Phone phone) {
+    public Long insertPhone(Phone phone) {
         Long phone_id = 0L;
         String sql = "INSERT INTO university.phones VALUES(?, ?) returning id ";
         try {
@@ -118,4 +119,17 @@ public class PhoneDao {
         }
         return phones;
     }
+
+    public void addPhoneToPerson (Phone phone, Person person){
+        String sql = "INSERT INTO university.persons_to_phones(person_id, phone_id) VALUES(?, ?)";
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setLong(1, person.getId());
+            statement.setLong(2, phone.getId());
+            statement.execute();
+        } catch (SQLException e){
+            e.printStackTrace();
+        }
+    }
 }
+

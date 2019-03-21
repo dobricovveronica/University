@@ -49,7 +49,7 @@
 
 <body>
 <h1>List Students</h1>
-<form action="list.jsp" method="post">
+<form method="post">
     <div class="form-group row">
         <div class="col-1">
             <label class="col-sm-2 col-form-label"> Name:</label>
@@ -83,13 +83,13 @@
                 <% Set<Discipline> disciplines = (Set<Discipline>) request.getAttribute("disciplines");
                     for (Discipline discipline : disciplines) {
                 %>
-                <option value="<%=discipline.getTitle()%>"><%=discipline.getTitle()%>
+                <option name="discipline_id" value="<%=discipline.getId()%>"><%=discipline.getTitle()%>
                 </option>
                 <%}%>
             </select>
         </div>
         <div class="col-2">
-            <input type="text" class="form-control" placeholder="">
+            <input type="text" class="form-control" placeholder="" name="discipline_title">
         </div>
     </div>
     <br>
@@ -103,7 +103,7 @@
                 <% Set<Group> groups = (Set<Group>) request.getAttribute("groups");
                     for (Group group : groups) {
                 %>
-                <option><%=group.getName()%>
+                <option name="group_id" value="<%=group.getId()%>"><%=group.getName()%>
                 </option>
                 <%}%>
             </select>
@@ -122,17 +122,18 @@
         </div>
         <div class="col-2">
             <div class="form-check form-check-inline">
-                <input class="form-check-input col-2" type="radio" name="gender" value="male"> Male<br>
-                <input class="form-check-input col-2" type="radio" name="gender" value="female"> Female<br>
+                <input class="form-check-input col-2" type="radio" name="gender" value="M"> Male<br>
+                <input class="form-check-input col-2" type="radio" name="gender" value="F"> Female<br>
                 <input class="form-check-input col-2" type="radio" name="gender" value="all" disabled> All<br>
             </div>
         </div>
         <div class="col-3"></div>
         <div class="col-1">
-            <button type="button" class="btn btn-secondary btm-sm" name="search">Search</button>
+<%--            <input type="hidden" name="action" value="SEARCH">--%>
+            <button type="submit" class="btn btn-secondary btm-sm" name="search">Search</button>
         </div>
         <div class="col">
-            <button type="button" class="btn btn-secondary btm-sm" name="reset">Reset</button>
+            <button type="reset" class="btn btn-secondary btm-sm" name="reset">Reset</button>
         </div>
     </div>
 </form>
@@ -216,7 +217,7 @@
     <button type="submit" class="btn btn-secondary btm-sm" name="add_student"
             onclick="window.open('/student?action=ADD_STUDENT','MyWindow' ,400,400);">Add New
     </button>
-    <input type="hidden" name="action" value="DELETE">
+<%--    <input type="hidden" name="action" value="DELETE">--%>
     <button type="submit" class="btn btn-secondary btm-sm" id="delete"
             onClick="refresh()">Delete
     </button>

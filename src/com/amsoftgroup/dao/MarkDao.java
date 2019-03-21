@@ -17,7 +17,7 @@ public class MarkDao {
         this.connection = connection;
     }
 
-    public Set<Mark> get() {
+    public Set<Mark> getMark() {
         String sql = "SELECT * FROM university.marks ";
         Set<Mark> marks = new HashSet<>();
         try {
@@ -42,7 +42,7 @@ public class MarkDao {
         return marks;
     }
 
-    public void delete(Mark mark) {
+    public void deleteMark(Mark mark) {
         String sql = "DELETE FROM university.marks where id = ?";
 
         try {
@@ -56,7 +56,7 @@ public class MarkDao {
         }
     }
 
-    public void update(Mark mark) {
+    public void updateMark(Mark mark) {
         String sql = "UPDATE university.marks SET student_id=?, discipline_id=?, teacher_id=?, value=?, create_data=? where id = ?";
 
         try {
@@ -75,16 +75,16 @@ public class MarkDao {
         }
     }
 
-    public void insert(Mark mark, Long id) {
+    public void insertMark(Mark mark) {
         String sql = "INSERT INTO university.marks VALUES(?, ?, ?, ?, ?)";
 
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setLong(1, id);
+            statement.setLong(1, mark.getStudent().getId());
             statement.setLong(2, mark.getDiscipline().getId());
             statement.setLong(3, mark.getTeacher().getId());
             statement.setDouble(4, mark.getValue());
-            statement.setDate(5, Date.valueOf(mark.getCreateData()));
+            statement.setDate(5, Date.valueOf(LocalDate.now()));
             System.out.println(statement.toString());
             statement.execute();
 
