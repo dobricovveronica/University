@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -52,7 +53,16 @@ public class StudentServlet extends HttpServlet {
 //                requestDispatcher = getServletContext().getRequestDispatcher("/WEB-INF/views/mark.jsp");
 //                requestDispatcher.forward(request, response);
                 break;
-            case "ADD_STUDENT":
+            case "LIBRARY_ABONAMENT":
+//                student.setId(Long.parseLong(request.getParameter("student")));
+                libraryAbonament.setId(Long.parseLong(request.getParameter("abonamentId")));
+                libraryAbonament.setStatus(request.getParameter("status"));
+                libraryAbonament.setStartDate(LocalDate.parse(String.valueOf(request.getParameter("start_date"))));
+                libraryAbonament.setEndDate(LocalDate.parse(String.valueOf(request.getParameter("end_date"))));
+                studentService.updateLibraryAbonamentByStudentId(libraryAbonament);
+
+                break;
+            case "EDIT":
                 address.setCountry(request.getParameter("country"));
                 address.setCity(request.getParameter("city"));
                 address.setAddress(request.getParameter("address"));
@@ -62,19 +72,28 @@ public class StudentServlet extends HttpServlet {
                 person.setDateOfBirth(LocalDate.parse(String.valueOf(request.getParameter("date_of_birth"))));
                 person.setGender(request.getParameter("gender").charAt(0));
 
-                Set <Phone> phones = new HashSet<>();
-                phoneType.setId(Long.parseLong(request.getParameter("phone_type")));
-                phone.setPhoneType(phoneType);
-                phone.setValue(request.getParameter("phone"));
-                phones.add(phone);
-                libraryAbonament.setStatus("None");
+//                Set <Phone> phones = new HashSet<>();
+//                phoneType.setId(Long.parseLong(request.getParameter("phone_type")));
+//                phone.setPhoneType(phoneType);
+//                phone.setValue(request.getParameter("phone"));
+//                phones.add(phone);
+
                 group.setId(Long.parseLong(request.getParameter("group")));
 
-                person.setAddresses(address);
-                person.setPhones(phones);
-                person.setLibraryAbonament(libraryAbonament);
+//                person.setPhones(phones);
 
-                studentService.addNewStudent(person, group);
+
+                if (person != null) {
+                    address.setId(Long.parseLong(request.getParameter("addressId")));
+                    person.setId(Long.parseLong(request.getParameter("studentId")));
+                    person.setAddresses(address);
+                    studentService.updateStudent(person, group);
+                } else {
+                    libraryAbonament.setStatus("None");
+                    person.setAddresses(address);
+                    person.setLibraryAbonament(libraryAbonament);
+                    studentService.addNewStudent(person, group);
+                }
 //                requestDispatcher = getServletContext().getRequestDispatcher("/WEB-INF/views/addStudent.jsp");
 //                requestDispatcher requestDispatcher.forward(request, response);
                 break;

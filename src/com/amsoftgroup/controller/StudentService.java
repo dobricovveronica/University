@@ -55,6 +55,7 @@ public class StudentService {
     public Set<Discipline> getAllDisciplines() {
         return disciplineDao.getAllDisciplines();
     }
+
     public  Set<Discipline> getDisciplineById(Long id){ return disciplineDao.getDisciplineById(id); }
 
     public Set<Student> getAllStudents() {
@@ -83,24 +84,43 @@ public class StudentService {
         LibraryAbonament libraryAbonament = new LibraryAbonament();
         person.getLibraryAbonament().setId(libraryAbonamentDao.insertLibraryAbonament(person.getLibraryAbonament()));
         person.setId(personDao.insertPerson(person));
-        Set<Phone> phones = new HashSet<>();
-        for (Phone phone : person.getPhones()) {
-//            phone.setId(phoneDao.insertPhone(phone, phone_type));
-//            person.setId(personDao.insertPerson(person, address, libraryAbonament));
-//            phoneDao.addPhoneToPerson(phone.getId(), student.getId());
-            phone.setId(phoneDao.insertPhone(phone));
-            phoneDao.addPhoneToPerson(phone, person);
-        }
+//        Set<Phone> phones = new HashSet<>();
+//        for (Phone phone : person.getPhones()) {
+////            phone.setId(phoneDao.insertPhone(phone, phone_type));
+////            person.setId(personDao.insertPerson(person, address, libraryAbonament));
+////            phoneDao.addPhoneToPerson(phone.getId(), student.getId());
+//            phone.setId(phoneDao.insertPhone(phone));
+//            phoneDao.addPhoneToPerson(phone, person);
+//        }
         student.setId(person.getId());
         student.getGroup().setId(group.getId());
         studentDao.insertStudent(student);
     }
 
+    public void updateStudent(Person person, Group group) {
+        Student student = new Student();
+        addressDao.updateAddress(person.getAddresses());
+        personDao.updatePerson(person);
+
+//        Set<Phone> phones = new HashSet<>();
+//        for (Phone phone : person.getPhones()) {
+////            phone.setId(phoneDao.insertPhone(phone, phone_type));
+////            person.setId(personDao.insertPerson(person, address, libraryAbonament));
+////            phoneDao.addPhoneToPerson(phone.getId(), student.getId());
+//            phone.setId(phoneDao.insertPhone(phone));
+//            phoneDao.addPhoneToPerson(phone, person);
+//        }
+        student.setId(person.getId());
+        student.getGroup().setId(group.getId());
+        studentDao.updateStudent(student);
+    }
+
     public void  addMarkByStudentId(Mark mark){
         markDao.insertMark(mark);}
 
-//    public Mark getMarkByStudentId(Long id){return markDao.getMarkByStudentId(id);}
-//
+    public void updateLibraryAbonamentByStudentId(LibraryAbonament libraryAbonament){
+        libraryAbonamentDao.updateLibraryAbonament(libraryAbonament);
+    }
 
 
     public void deleteStudent(String[] list) {

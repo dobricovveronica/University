@@ -25,6 +25,7 @@
 
     <div class="form-group row">
         <div class="col-1">
+            <input type="hidden" name="studentId" value="<%=student.getId()%>">
             <label class="col-sm-2 col-form-label">FirstName:</label>
         </div>
         <div class="col-3">
@@ -36,14 +37,13 @@
             <label class="col-sm-2 col-form-label">Group:</label>
         </div>
         <div class="col-2">
-            <select class="form-control">
-                <option selected><%=student.getGroup().getName()%>
+            <select name="group" class="form-control">
+                <option selected value="<%=student.getGroup().getId()%>"><%=student.getGroup().getName()%>
                 </option>
                 <% Set<Group> groups = (Set<Group>) request.getAttribute("groups");
                     for (Group group : groups) {
                 %>
-                <option name="group_id" value="<%=group.getId()%>"><%=group.getName()%>
-                </option>
+                <option value="<%=group.getId()%>"><%=group.getName()%></option>
                 <%}%>
             </select>
         </div>
@@ -79,6 +79,7 @@
             </div>
         </div>
         <div class="form-row">
+            <input type="hidden" name="addressId" value="<%=student.getAddresses().getId()%>">
             <div class="col-1">
                 <label class="col-sm-2 col-form-label">Country:</label>
             </div>
@@ -113,13 +114,13 @@
                 <label class="col-sm-2 col-form-label">Phone(s):</label>
             </div>
             <div class="col-1">
-                <select class="form-control">
+                <select class="form-control" name="phone_type">
                     <option selected>All</option>
 
                     <% Set<PhoneType> phoneTypes = (Set<PhoneType>) request.getAttribute("phoneTypes");
                         for (PhoneType phoneType : phoneTypes) {
                     %>
-                    <option name="phone_type"><%=phoneType.getName()%>
+                    <option value="<%=phoneType.getId()%>"><%=phoneType.getName()%>
                     </option>
                     <%}%>
                 </select>
@@ -145,7 +146,7 @@
         <div class="col-2">
             <button type="submit" class="btn btn-secondary btm-sm">Save</button>
 
-            <button type="submit" class="btn btn-secondary btm-sm">Cancel</button>
+            <button type="button" onclick="window.close()"  class="btn btn-secondary btm-sm">Cancel</button>
         </div>
     </div>
 </form>

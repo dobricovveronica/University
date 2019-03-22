@@ -14,23 +14,31 @@
     <style>
         <%@include file="/WEB-INF/views/css/bootstrap.min.css" %>
     </style>
+    <script>
+        function exit() {
+           form.submit();
+           window.close();
+        }
+    </script>
 </head>
 <body>
 <%Student student = (Student) request.getAttribute("student"); %>
 <h1> <%=student.getFirstName()%> <%=student.getLastName()%> - student abonament</h1>
-<form>
+
+<form method="post" onsubmit="return exit()">
     <%java.text.DateFormat df = new java.text.SimpleDateFormat("MM/dd/yyyy"); %>
+    <input type="hidden" name="abonamentId" value="<%=student.getLibraryAbonament().getId()%>">
     <div class="form-group row">
         <div class="col-1">
             <label class="col-sm-2 col-form-label">Status:</label>
         </div>
         <div class="col-3">
-            <select class="form-control">
+            <select name="status" class="form-control">
                 <option selected><%=student.getLibraryAbonament().getStatus()%></option>
                 <% Set<LibraryAbonament> libraryAbonaments = (Set<LibraryAbonament>) request.getAttribute("libraryAbonaments");
                     for (LibraryAbonament libraryAbonament : libraryAbonaments) {
                 %>
-                <option><%=libraryAbonament.getStatus()%>
+                <option value="<%=libraryAbonament.getStatus()%>"><%=libraryAbonament.getStatus()%>
                 </option>
                 <%}%>
             </select>
@@ -42,7 +50,7 @@
             <label class="col-sm-2 col-form-label">StartDate:</label>
         </div>
         <div class="col-3">
-            <input type="date" class="form-control" placeholder="" value="<%=student.getLibraryAbonament().getStartDate()%>">
+            <input type="date" class="form-control" name="start_date" value="<%=student.getLibraryAbonament().getStartDate()%>">
         </div>
     </div>
     <div class="form-group row">
@@ -50,15 +58,15 @@
             <label class="col-sm-2 col-form-label">EndDate:</label>
         </div>
         <div class="col-3">
-            <input type="date" class="form-control" placeholder="End date" value="<%=student.getLibraryAbonament().getEndDate()%>">
+            <input type="date" class="form-control" name="end_date" value="<%=student.getLibraryAbonament().getEndDate()%>">
         </div>
     </div>
     <div class="form-row">
         <div class="col-2"></div>
         <div class="col-2">
-            <button type="button" class="btn btn-secondary btm-sm">Save</button>
+            <button type="submit"  class="btn btn-secondary btm-sm">Save</button>
 
-            <button type="button" class="btn btn-secondary btm-sm">Cancel</button>
+            <button type="button" onclick="window.close()" class="btn btn-secondary btm-sm">Cancel</button>
         </div>
     </div>
 </form>

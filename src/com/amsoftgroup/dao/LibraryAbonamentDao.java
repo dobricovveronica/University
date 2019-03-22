@@ -59,7 +59,7 @@ public class LibraryAbonamentDao {
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, libraryAbonament.getStatus());
-            statement.setDate(2, java.sql.Date.valueOf(libraryAbonament.getStartDate()));
+            statement.setDate(2, Date.valueOf(libraryAbonament.getStartDate()));
             statement.setDate(3, Date.valueOf(libraryAbonament.getEndDate()));
             statement.setLong(4, libraryAbonament.getId());
             System.out.println(statement.toString());

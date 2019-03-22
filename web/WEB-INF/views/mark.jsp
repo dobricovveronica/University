@@ -30,7 +30,7 @@
                 <% Set<Discipline> disciplines = (Set<Discipline>) request.getAttribute("disciplines");
                     for (Discipline discipline : disciplines) {
                 %>
-                <option name="discipline" value="<%=discipline.getId()%>"><%=discipline.getTitle()%>
+                <option  value="<%=discipline.getId()%>"><%=discipline.getTitle()%>
                 </option>
                 <%}%>
             </select>

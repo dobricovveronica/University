@@ -61,7 +61,7 @@ public class PersonDao {
     }
 
     public void updatePerson(Person person) {
-        String sql = "UPDATE university.persons SET first_name=?, last_name=?, date_of_birth=?, gender=?, picture=?, mail=?, address_id=?, library_abonament_id=? where id = ?";
+        String sql = "UPDATE university.persons SET first_name=?, last_name=?, date_of_birth=?, gender=?, picture=?, mail=?, address_id=? where id = ?";
 
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
@@ -72,8 +72,8 @@ public class PersonDao {
             statement.setBytes(5, person.getPicture());
             statement.setString(6, person.getMail());
             statement.setLong(7, person.getAddresses().getId());
-            statement.setLong(8, person.getLibraryAbonament().getId());
-            statement.setLong(9, person.getId());
+//            statement.setLong(8, person.getLibraryAbonament().getId());
+            statement.setLong(8, person.getId());
             System.out.println(statement.toString());
             statement.execute();
 
