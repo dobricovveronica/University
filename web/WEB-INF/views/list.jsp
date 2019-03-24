@@ -1,18 +1,12 @@
+<%@ page import="com.amsoftgroup.model.Discipline" %>
+<%@ page import="com.amsoftgroup.model.Group" %>
+<%@ page import="com.amsoftgroup.model.Phone" %>
+<%@ page import="com.amsoftgroup.model.Student" %>
 <%@ page import="java.util.Set" %>
-<%@ page import="com.amsoftgroup.model.*" %>
-<%@ page import="java.util.ArrayList" %>
 
-<%--
-  Created by IntelliJ IDEA.
-  User: vdobricov
-  Date: 3/11/2019
-  Time: 9:38 AM
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <%--    <link rel="stylesheet" href="/WEB-INF/views/css/bootstrap.min.css" type="text/css">--%>
     <title>Student Management</title>
     <style>
         <%@include file="/WEB-INF/views/css/bootstrap.min.css" %>
@@ -183,11 +177,13 @@
                 <%}%>
             </td>
             <td><a href="#" style="color: #221fff;"
-                   onclick="window.open('/student?action=LIBRARY_ABONAMENT&studentId='+ <%=student.getLibraryAbonament().getId()%>,'MyWindow', 200, 200);
+                   onclick="window.open('/student?action=LIBRARY_ABONAMENT&studentId='+ <%=student.getId()%>,'MyWindow', 200, 200);
                            return false;"><%="Status: " + student.getLibraryAbonament().getStatus()%>
             </a><br>
+                <p <%=(!student.getLibraryAbonament().getStatus().equals("ACTIVE"))?"hidden":""%>>
                 From: <%=student.getLibraryAbonament().getStartDate()%><br>
                 To: <%=student.getLibraryAbonament().getEndDate()%>
+                </p>
             </td>
             <td><%=student.getGroup().getName()%>
             </td>

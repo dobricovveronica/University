@@ -73,8 +73,8 @@
             </div>
             <div class="col-2">
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input col-4" type="radio" name="gender" value="M"> Male<br>
-                    <input class="form-check-input col-4" type="radio" name="gender" value="F"> Female<br>
+                    <input class="form-check-input col-4" type="radio" name="gender" value="M" <%=(student.getGender()=='M')?"checked":""%>>Male<br>
+                    <input class="form-check-input col-4" type="radio" name="gender" value="F" <%=(student.getGender()=='F')?"checked":""%>>Female<br>
                 </div>
             </div>
         </div>

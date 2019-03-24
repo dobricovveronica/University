@@ -3,7 +3,6 @@ package com.amsoftgroup.dao;
 import com.amsoftgroup.model.Address;
 import com.amsoftgroup.model.LibraryAbonament;
 import com.amsoftgroup.model.Person;
-import com.amsoftgroup.model.Phone;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -72,29 +71,13 @@ public class PersonDao {
             statement.setBytes(5, person.getPicture());
             statement.setString(6, person.getMail());
             statement.setLong(7, person.getAddresses().getId());
-//            statement.setLong(8, person.getLibraryAbonament().getId());
             statement.setLong(8, person.getId());
-            System.out.println(statement.toString());
             statement.execute();
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    //    public void insert() {
-//        String sql = "INSERT INTO university.persons VALUES(?)";
-//
-//        try {
-//            PreparedStatement statement = connection.prepareStatement(sql);
-//            statement.setString(1, "IS31Z");
-//            System.out.println(statement.toString());
-//            statement.execute();
-//
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//    }
     public Long insertPerson(Person person) {
         String sql = "INSERT INTO university.persons VALUES(?, ?, ?, ?, ?, ?, ?, ?) returning id";
         Long person_id = 0L;
@@ -108,15 +91,13 @@ public class PersonDao {
             statement.setString(6, person.getMail());
             statement.setLong(7, person.getAddresses().getId());
             statement.setLong(8, person.getLibraryAbonament().getId());
-            System.out.println(statement.toString());
             ResultSet rs = statement.executeQuery();
             rs.next();
             person_id = rs.getLong(1);
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return  person_id;
+        return person_id;
     }
 
     public Set<Person> getAllPersons() {
@@ -139,7 +120,6 @@ public class PersonDao {
         Set<Person> persons = new HashSet<>();
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
-
             System.out.println(statement.toString());
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
@@ -149,7 +129,6 @@ public class PersonDao {
                 person.setLastName(rs.getString("last_name"));
                 person.setDateOfBirth(LocalDate.parse(String.valueOf(rs.getDate("date_of_birth"))));
                 person.setGender(rs.getString("gender").charAt(0));
-//                person.setPicture(rs.getBytes("picture"));
                 person.setMail(rs.getString("mail"));
                 Address address = new Address();
                 address.setId(Long.parseLong(rs.getString("aid")));
@@ -160,15 +139,7 @@ public class PersonDao {
                 libraryAbonament.setId(Long.parseLong(rs.getString("laid")));
                 libraryAbonament.setStatus(rs.getString("status"));
                 person.setLibraryAbonament(libraryAbonament);
-//                address.setCountry(rs.getString("country"));
-//                person.getAddresses().setCity(rs.getString("addresses.city"));
-//                person.getAddresses().setAddress(rs.getString("addresses.address"));
-
-//                person.getLibraryAbonament().setStatus(rs.getString("library_abonaments.status"));
-//                person.getAddresses().setId(Long.parseLong(rs.getString("address_id")));
-//                person.getLibraryAbonament().setId(Long.parseLong(rs.getString("library_abonament_id")));
                 persons.add(person);
-//                System.out.println(rs.getLong("id") + " " + rs.getString("first_name") + " " + rs.getString("last_name") + " " + rs.getString("date_of_birth") + " " + rs.getString("gender"));
             }
         } catch (SQLException e) {
             e.printStackTrace();

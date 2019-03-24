@@ -2,7 +2,7 @@ package com.amsoftgroup.model;
 
 import java.util.HashSet;
 
-public class Teacher extends Person{
+public class Teacher extends Person {
     private long id;
 
     private double salary;

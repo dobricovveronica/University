@@ -1,7 +1,6 @@
 package com.amsoftgroup.dao;
 
 import com.amsoftgroup.model.Average;
-import com.amsoftgroup.model.Group;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -33,7 +32,7 @@ public class AverageDao {
                 average.getDiscipline().setId(Long.parseLong("discipline_id"));
                 average.setValue(rs.getDouble("value"));
                 averages.add(average);
-                System.out.println(rs.getLong("id") + " " + rs.getLong("student_id") + " " + rs.getLong("discipline_id")+ " " + rs.getString("value"));
+                System.out.println(rs.getLong("id") + " " + rs.getLong("student_id") + " " + rs.getLong("discipline_id") + " " + rs.getString("value"));
             }
         } catch (SQLException e) {
             e.printStackTrace();

@@ -120,14 +120,14 @@ public class PhoneDao {
         return phones;
     }
 
-    public void addPhoneToPerson (Phone phone, Person person){
+    public void addPhoneToPerson(Phone phone, Person person) {
         String sql = "INSERT INTO university.persons_to_phones(person_id, phone_id) VALUES(?, ?)";
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setLong(1, person.getId());
             statement.setLong(2, phone.getId());
             statement.execute();
-        } catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }

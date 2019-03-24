@@ -1,6 +1,7 @@
 package com.amsoftgroup.dao;
 
-import com.amsoftgroup.model.*;
+import com.amsoftgroup.model.Discipline;
+import com.amsoftgroup.model.Student;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -113,25 +114,32 @@ public class DisciplineDao {
                 "left join university.disciplines as D on DS.discipline_id = D.id " +
                 "left join university.marks as M on D.id = M.discipline_id " +
                 "where P.id = ? ";
-
         Set<Discipline> disciplines = new HashSet<>();
 
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
-
-            System.out.println(statement.toString());
             statement.setLong(1, studentId);
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
                 Discipline discipline = new Discipline();
+                discipline.setId(Long.parseLong(rs.getString("did")));
                 discipline.setTitle(rs.getString("title"));
                 disciplines.add(discipline);
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return disciplines;
     }
-
+    public void addDisciplineToStudent(Student student) {
+        String sql = "INSERT INTO university.disciplines_to_students(student_id, discipline_id) VALUES(?, ?)";
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setLong(1, student.getId());
+            statement.setLong(2, 4L);
+            statement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

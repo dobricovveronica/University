@@ -1,8 +1,6 @@
 package com.amsoftgroup.dao;
 
-import com.amsoftgroup.model.Discipline;
 import com.amsoftgroup.model.Mark;
-import com.amsoftgroup.model.Student;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -34,7 +32,7 @@ public class MarkDao {
                 mark.setValue(Long.parseLong(rs.getString("value")));
                 mark.setCreateData(LocalDate.parse(String.valueOf(rs.getDate("create_data"))));
                 marks.add(mark);
-                System.out.println(rs.getLong("id") + " " + rs.getString("title")+ " " + rs.getLong("teacher_id"));
+                System.out.println(rs.getLong("id") + " " + rs.getString("title") + " " + rs.getLong("teacher_id"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -66,10 +64,9 @@ public class MarkDao {
             statement.setLong(3, mark.getTeacher().getId());
             statement.setDouble(4, mark.getValue());
             statement.setDate(5, Date.valueOf(mark.getCreateData()));
-            statement.setLong(6,mark.getId());
+            statement.setLong(6, mark.getId());
             System.out.println(statement.toString());
             statement.execute();
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -87,28 +84,23 @@ public class MarkDao {
             statement.setDate(5, Date.valueOf(LocalDate.now()));
             System.out.println(statement.toString());
             statement.execute();
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
     public Mark getMarkByStudentId(Long id) {
         String sql = "SELECT * FROM university.marks where marks.id = ?";
         Mark mark = new Mark();
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
-
-            System.out.println(statement.toString());
             ResultSet rs = statement.executeQuery();
-                statement.setLong(1,id);
-
-                mark.getStudent().setId(Long.parseLong(rs.getString("student_id")));
-                mark.getDiscipline().setId(Long.parseLong(rs.getString("discipline_id")));
-                mark.getTeacher().setId(Long.parseLong(rs.getString("teacher_id")));
-                mark.setValue(Long.parseLong(rs.getString("value")));
-                mark.setCreateData(LocalDate.parse(String.valueOf(rs.getDate("create_data"))));
-                System.out.println(rs.getLong("id") + " " + rs.getString("title")+ " " + rs.getLong("teacher_id"));
-
+            statement.setLong(1, id);
+            mark.getStudent().setId(Long.parseLong(rs.getString("student_id")));
+            mark.getDiscipline().setId(Long.parseLong(rs.getString("discipline_id")));
+            mark.getTeacher().setId(Long.parseLong(rs.getString("teacher_id")));
+            mark.setValue(Long.parseLong(rs.getString("value")));
+            mark.setCreateData(LocalDate.parse(String.valueOf(rs.getDate("create_data"))));
         } catch (SQLException e) {
             e.printStackTrace();
         }

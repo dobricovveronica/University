@@ -1,15 +1,13 @@
-
 package com.amsoftgroup.dao;
 
-        import com.amsoftgroup.model.Address;
-        import com.amsoftgroup.model.Group;
+import com.amsoftgroup.model.Address;
 
-        import java.sql.Connection;
-        import java.sql.PreparedStatement;
-        import java.sql.ResultSet;
-        import java.sql.SQLException;
-        import java.util.HashSet;
-        import java.util.Set;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.Set;
 
 public class AddressDao {
 
@@ -89,6 +87,6 @@ public class AddressDao {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return  address_id;
+        return address_id;
     }
 }

@@ -1,7 +1,5 @@
 package com.amsoftgroup.model;
 
-import java.util.HashSet;
-
 public class Average {
 
     private long id;

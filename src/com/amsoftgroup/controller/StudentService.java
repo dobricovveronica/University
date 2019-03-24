@@ -5,11 +5,6 @@ import com.amsoftgroup.model.*;
 import com.amsoftgroup.utilitys.DataBaseConnection;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -56,7 +51,9 @@ public class StudentService {
         return disciplineDao.getAllDisciplines();
     }
 
-    public  Set<Discipline> getDisciplineById(Long id){ return disciplineDao.getDisciplineById(id); }
+    public Set<Discipline> getDisciplineById(Long id) {
+        return disciplineDao.getDisciplineById(id);
+    }
 
     public Set<Student> getAllStudents() {
         return studentDao.getAllStudents();
@@ -80,21 +77,23 @@ public class StudentService {
 
     public void addNewStudent(Person person, Group group) {
         Student student = new Student();
+
         person.getAddresses().setId(addressDao.insertAddress(person.getAddresses()));
         LibraryAbonament libraryAbonament = new LibraryAbonament();
-        person.getLibraryAbonament().setId(libraryAbonamentDao.insertLibraryAbonament(person.getLibraryAbonament()));
+        libraryAbonament.setId(libraryAbonamentDao.insertLibraryAbonament());
+        person.setLibraryAbonament(libraryAbonament);
         person.setId(personDao.insertPerson(person));
-//        Set<Phone> phones = new HashSet<>();
-//        for (Phone phone : person.getPhones()) {
-////            phone.setId(phoneDao.insertPhone(phone, phone_type));
-////            person.setId(personDao.insertPerson(person, address, libraryAbonament));
-////            phoneDao.addPhoneToPerson(phone.getId(), student.getId());
-//            phone.setId(phoneDao.insertPhone(phone));
-//            phoneDao.addPhoneToPerson(phone, person);
-//        }
+
+        Set<Phone> phones = new HashSet<>();
+        for (Phone phone : person.getPhones()) {
+            phone.setId(phoneDao.insertPhone(phone));
+            phoneDao.addPhoneToPerson(phone, person);
+
+        }
         student.setId(person.getId());
-        student.getGroup().setId(group.getId());
+        student.setGroup(group);
         studentDao.insertStudent(student);
+        disciplineDao.addDisciplineToStudent(student);
     }
 
     public void updateStudent(Person person, Group group) {
@@ -111,14 +110,15 @@ public class StudentService {
 //            phoneDao.addPhoneToPerson(phone, person);
 //        }
         student.setId(person.getId());
-        student.getGroup().setId(group.getId());
+        student.setGroup(group);
         studentDao.updateStudent(student);
     }
 
-    public void  addMarkByStudentId(Mark mark){
-        markDao.insertMark(mark);}
+    public void addMarkByStudentId(Mark mark) {
+        markDao.insertMark(mark);
+    }
 
-    public void updateLibraryAbonamentByStudentId(LibraryAbonament libraryAbonament){
+    public void updateLibraryAbonamentByStudentId(LibraryAbonament libraryAbonament) {
         libraryAbonamentDao.updateLibraryAbonament(libraryAbonament);
     }
 

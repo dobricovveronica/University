@@ -1,10 +1,11 @@
 package com.amsoftgroup.dao;
 
 import com.amsoftgroup.model.*;
-import com.amsoftgroup.dao.*;
 
-
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashSet;
@@ -54,22 +55,15 @@ public class StudentDao {
 
     public void updateStudent(Student student) {
         String sql = "UPDATE university.students SET group_id=? where id = ?";
-
-        try {
-            PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setLong(1, student.getGroup().getId());
-            statement.setLong(2, student.getId());
-            System.out.println(statement.toString());
-            statement.execute();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        executeSQL(student, sql);
     }
 
     public void insertStudent(Student student) {
-        String sql = "insert into university.students(group_id, id) values(?, ?) ";
+        String sql = "INSERT INTO university.students(group_id, id) VALUES(?, ?) ";
+        executeSQL(student, sql);
+    }
 
+    public void executeSQL(Student student, String sql) {
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setLong(1, student.getGroup().getId());
@@ -81,6 +75,7 @@ public class StudentDao {
             e.printStackTrace();
         }
     }
+
     public Set<Student> getAllStudents() {
         String sql = "select P.id, " +
                 "P.first_name, " +
@@ -203,7 +198,8 @@ public class StudentDao {
                 student.setGroup(group);
 
                 student.setDisciplines(new DisciplineDao(connection).getDisciplineById(student.getId()));
-        }} catch (SQLException e) {
+            }
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return student;

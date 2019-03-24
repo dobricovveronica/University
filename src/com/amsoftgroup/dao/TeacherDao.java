@@ -1,6 +1,5 @@
 package com.amsoftgroup.dao;
 
-import com.amsoftgroup.model.Group;
 import com.amsoftgroup.model.Teacher;
 
 import java.sql.Connection;
@@ -81,6 +80,7 @@ public class TeacherDao {
             e.printStackTrace();
         }
     }
+
     public Set<Teacher> getAllTeacher() {
         String sql = "Select P.id, P.first_name, P.last_name, T.id as tid from university.persons as P " +
                 "inner join university.teachers as T on T.id = P.id  ";

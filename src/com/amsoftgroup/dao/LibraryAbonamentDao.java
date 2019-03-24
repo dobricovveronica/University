@@ -2,7 +2,6 @@ package com.amsoftgroup.dao;
 
 import com.amsoftgroup.model.LibraryAbonament;
 
-import javax.xml.crypto.Data;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -86,12 +85,12 @@ public class LibraryAbonamentDao {
 //        }
 //    }
 
-    public Long insertLibraryAbonament(LibraryAbonament libraryAbonament) {
+    public Long insertLibraryAbonament() {
         String sql = "INSERT INTO university.library_abonaments VALUES(?) returning id";
         Long libraryAbonamentId = 0L;
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, "None");
+            statement.setString(1, "NONE");
 //            statement.setDate(2, null);
 //            statement.setDate(3, null);
             System.out.println(statement.toString());
