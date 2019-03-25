@@ -7,6 +7,8 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
+import static java.util.Objects.isNull;
+
 public class LibraryAbonamentDao {
 
     private Connection connection;
@@ -85,14 +87,18 @@ public class LibraryAbonamentDao {
 //        }
 //    }
 
-    public Long insertLibraryAbonament() {
+    public Long insertLibraryAbonament(LibraryAbonament libraryAbonament) {
         String sql = "INSERT INTO university.library_abonaments VALUES(?) returning id";
         Long libraryAbonamentId = 0L;
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setString(1, "NONE");
-//            statement.setDate(2, null);
-//            statement.setDate(3, null);
+            statement.setString(1, libraryAbonament.getStatus());
+            if(!isNull(libraryAbonament.getStartDate())){
+                statement.setDate(2, Date.valueOf(libraryAbonament.getStartDate()));}
+            else {statement.setDate(2, null);}
+            if(!isNull(libraryAbonament.getStartDate())){
+                statement.setDate(3, Date.valueOf(libraryAbonament.getEndDate()));}
+            else {statement.setDate(3, null);}
             System.out.println(statement.toString());
             ResultSet rs = statement.executeQuery();
             rs.next();

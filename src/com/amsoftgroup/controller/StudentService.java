@@ -5,6 +5,7 @@ import com.amsoftgroup.model.*;
 import com.amsoftgroup.utilitys.DataBaseConnection;
 
 import java.sql.Connection;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -75,31 +76,28 @@ public class StudentService {
         return studentDao.getStudentById(id);
     }
 
-    public void addNewStudent(Person person, Group group) {
-        Student student = new Student();
+    public void addNewStudent(Student student) {
 
-        person.getAddresses().setId(addressDao.insertAddress(person.getAddresses()));
-        LibraryAbonament libraryAbonament = new LibraryAbonament();
-        libraryAbonament.setId(libraryAbonamentDao.insertLibraryAbonament());
-        person.setLibraryAbonament(libraryAbonament);
-        person.setId(personDao.insertPerson(person));
+
+        student.getAddresses().setId(addressDao.insertAddress(student.getAddresses()));
+        student.getLibraryAbonament().setId(libraryAbonamentDao.insertLibraryAbonament(student.getLibraryAbonament()));
+        student.setId(personDao.insertPerson(student));
 
         Set<Phone> phones = new HashSet<>();
-        for (Phone phone : person.getPhones()) {
+        for (Phone phone : student.getPhones()) {
             phone.setId(phoneDao.insertPhone(phone));
-            phoneDao.addPhoneToPerson(phone, person);
+            phoneDao.addPhoneToPerson(phone, student);
 
         }
-        student.setId(person.getId());
-        student.setGroup(group);
+
         studentDao.insertStudent(student);
         disciplineDao.addDisciplineToStudent(student);
     }
 
-    public void updateStudent(Person person, Group group) {
-        Student student = new Student();
-        addressDao.updateAddress(person.getAddresses());
-        personDao.updatePerson(person);
+    public void updateStudent(Student student) {
+
+        addressDao.updateAddress(student.getAddresses());
+        personDao.updatePerson(student);
 
 //        Set<Phone> phones = new HashSet<>();
 //        for (Phone phone : person.getPhones()) {
@@ -109,8 +107,7 @@ public class StudentService {
 //            phone.setId(phoneDao.insertPhone(phone));
 //            phoneDao.addPhoneToPerson(phone, person);
 //        }
-        student.setId(person.getId());
-        student.setGroup(group);
+
         studentDao.updateStudent(student);
     }
 
@@ -122,6 +119,9 @@ public class StudentService {
         libraryAbonamentDao.updateLibraryAbonament(libraryAbonament);
     }
 
+    public void searchStudents(String name, String studentAddress, Long discipline_id, String discipline_title, Long group_id, String gender){
+        studentDao.searchStudents(name, studentAddress,  discipline_id, discipline_title, group_id, gender);
+    };
 
     public void deleteStudent(String[] list) {
         Long id;

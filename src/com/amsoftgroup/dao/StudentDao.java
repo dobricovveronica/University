@@ -2,12 +2,8 @@ package com.amsoftgroup.dao;
 
 import com.amsoftgroup.model.*;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -205,7 +201,7 @@ public class StudentDao {
         return student;
     }
 
-    public Set<Student> searchStudents(String name, String studentAddress, Date start_date, Date end_date, Long discipline_id, String discipline_title, Long group_id, String gender) {
+    public Set<Student> searchStudents(String name, String studentAddress,  Long discipline_id, String discipline_title, Long group_id, String gender) {
         String sql = "select P.id, " +
                 "P.first_name, " +
                 "P.last_name, " +
@@ -233,9 +229,9 @@ public class StudentDao {
                 "left join university.groups as G on G.id = S.group_id " +
                 "left join university.disciplines_to_students as DtoS on S.id = DtoS.student_id " +
                 "left join university.disciplines as D on D.id = DtoS.discipline_id " +
-                "where (P.first_name = ? or P.first_name = ?) " +
+                "where (P.first_name = ? or P.last_name = ?) " +
                 "and (A.city = ? or A.country = ? or A.address = ?) " +
-                "and (P.date_of_birth = ? or P.date_of_birth between ? and ?) " +
+//                "and (P.date_of_birth = ? or P.date_of_birth between ? and ?) " +
                 "and G.id = ? " +
                 "and P.gender = ? " +
                 "and (D.id = ? or D.title = ?)";
@@ -244,13 +240,13 @@ public class StudentDao {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, name);
             statement.setString(2, studentAddress);
-            statement.setDate(3, (java.sql.Date) start_date);
-            statement.setDate(4, (java.sql.Date) start_date);
-            statement.setDate(5, (java.sql.Date) end_date);
-            statement.setLong(6, group_id);
-            statement.setString(7, gender);
-            statement.setLong(8, discipline_id);
-            statement.setString(9, discipline_title);
+//            statement.setDate(3, Date.valueOf(start_date));
+//            statement.setDate(4, Date.valueOf(start_date));
+//            statement.setDate(5,  Date.valueOf(end_date));
+            statement.setLong(3, group_id);
+            statement.setString(4, gender);
+            statement.setLong(5, discipline_id);
+            statement.setString(6, discipline_title);
             System.out.println(statement.toString());
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {

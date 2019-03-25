@@ -23,11 +23,25 @@
                 window.close();
             }, 3000);
         }
+
+        function previewFile() {
+            var preview = document.querySelector('img');
+            var file    = document.querySelector('input[type=file]').files[0];
+            var reader  = new FileReader();
+
+            reader.addEventListener("load", function () {
+                preview.src = reader.result;
+            }, false);
+
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+        }
     </script>
 </head>
 <body>
 <h1>Add Student</h1>
-<form method="post">
+<form method="post" enctype="multipart/form-data">
     <%--    <%Student student = (Student) request.getAttribute("student"); %>--%>
 
     <div class="form-group row">
@@ -76,11 +90,20 @@
             </div>
             <div class="col-2">
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input col-4" type="radio" name="gender" value="M"> Male<br>
+                    <input class="form-check-input col-4" type="radio" name="gender" value="M" checked> Male<br>
                     <input class="form-check-input col-4" type="radio" name="gender" value="F"> Female<br>
                 </div>
             </div>
         </div>
+        <div class="form-row">
+            <div class="col-1">
+                <label class="col-sm-2 col-form-label">Mail:</label>
+            </div>
+            <div class="col-3">
+                <input type="text" class="form-control" placeholder="Mail" name="mail"
+                       value="">
+            </div>
+        </div><br>
         <div class="form-row">
             <div class="col-1">
                 <label class="col-sm-2 col-form-label">Country:</label>
@@ -115,7 +138,6 @@
             <div class="col-1">
                 <select class="form-control" name="phone_type">
                     <option selected>All</option>
-
                     <% Set<PhoneType> phoneTypes = (Set<PhoneType>) request.getAttribute("phoneTypes");
                         for (PhoneType phoneType : phoneTypes) {
                     %>
@@ -132,10 +154,11 @@
                 <button type="button" class="btn btn-danger">Delete</button>
             </div>
             <div class="col-2">
-                <input type="text" class="form-control" placeholder="Picture File" name="image">
+<%--               <img src="" height="200" alt="Image preview">--%>
+<%--                <input type="file" class="form-control" placeholder="Picture File" name="image" onchange="previewFile()">--%>
             </div>
             <div class="col-1">
-                <button type="button" class="btn btn-secondary btm-sm">Browse</button>
+                <button type="button" class="btn btn-secondary btm-sm" onclick="previewFile()">Browse</button>
             </div>
         </div>
         <br>

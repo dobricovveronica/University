@@ -136,7 +136,7 @@ public class DisciplineDao {
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setLong(1, student.getId());
-            statement.setLong(2, 4L);
+            statement.setLong(2, 3L);
             statement.execute();
         } catch (SQLException e) {
             e.printStackTrace();

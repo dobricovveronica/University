@@ -2,7 +2,8 @@
 <%@ page import="java.util.Set" %>
 <%@ page import="com.amsoftgroup.model.Group" %>
 <%@ page import="com.amsoftgroup.model.PhoneType" %>
-<%@ page import="com.amsoftgroup.model.Student" %><%--
+<%@ page import="com.amsoftgroup.model.Student" %>
+<%@ page import="static java.util.Objects.isNull" %><%--
   Created by IntelliJ IDEA.
   User: vdobricov
   Date: 3/14/2019
@@ -21,16 +22,20 @@
 <body>
 <h1>Add / Edit Student</h1>
 <form method="post">
-    <%Student student = (Student) request.getAttribute("student"); %>
+
+    <% Student student = new Student();
+        String studentId = (String) request.getAttribute("studentId");%>
+        <%if (!isNull(studentId)){
+        student = (Student) request.getAttribute("student"); }%>
 
     <div class="form-group row">
         <div class="col-1">
-            <input type="hidden" name="studentId" value="<%=student.getId()%>">
+            <input type="hidden" name="studentId" <%if (!isNull(studentId)){%>value="<%=student.getId()%><%}%>">
             <label class="col-sm-2 col-form-label">FirstName:</label>
         </div>
         <div class="col-3">
             <input type="text" class="form-control" placeholder="First name" name="first_name"
-                   value="<%=student.getFirstName()%>">
+                   value="<%=(student.getFirstName()!="")?student.getFirstName():""%>">
         </div>
         <div class="col-1"></div>
         <div class="col-1">
@@ -38,7 +43,7 @@
         </div>
         <div class="col-2">
             <select name="group" class="form-control">
-                <option selected value="<%=student.getGroup().getId()%>"><%=student.getGroup().getName()%>
+                <option selected value="<%=student.getGroup().getId()%>"><%=(student.getGroup().getName()!="")?student.getGroup().getName():""%>
                 </option>
                 <% Set<Group> groups = (Set<Group>) request.getAttribute("groups");
                     for (Group group : groups) {
@@ -55,7 +60,7 @@
             </div>
             <div class="col-3">
                 <input type="text" class="form-control" placeholder="Last name" name="last_name"
-                       value="<%=student.getLastName()%>">
+                       value="<%=(student.getLastName()!="")?student.getLastName():""%>">
             </div>
         </div>
         <div class="form-group row">
@@ -64,7 +69,7 @@
             </div>
             <div class="col-3">
                 <input type="date" class="form-control" name="date_of_birth" placeholder="Date of birth"
-                       value="<%=student.getDateOfBirth()%>">
+                       value="<%=(student.getDateOfBirth()!= null)?student.getDateOfBirth():""%>">
             </div>
         </div>
         <div class="form-row">
@@ -79,13 +84,22 @@
             </div>
         </div>
         <div class="form-row">
+            <div class="col-1">
+                <label class="col-sm-2 col-form-label">Mail:</label>
+            </div>
+            <div class="col-3">
+                <input type="text" class="form-control" placeholder="Mail" name="mail"
+                       value="<%=(student.getMail()!="")?student.getMail():""%>">
+            </div>
+        </div> <br>
+        <div class="form-row">
             <input type="hidden" name="addressId" value="<%=student.getAddresses().getId()%>">
             <div class="col-1">
                 <label class="col-sm-2 col-form-label">Country:</label>
             </div>
             <div class="col-3">
                 <input type="text" class="form-control" placeholder="Country" name="country"
-                       value="<%=student.getAddresses().getCountry()%>">
+                       value="<%=(student.getAddresses().getCountry()!="")?student.getAddresses().getCountry():""%>">
             </div>
         </div>
         <br>
@@ -95,7 +109,7 @@
             </div>
             <div class="col-3">
                 <input type="text" class="form-control" placeholder="City" name="city"
-                       value="<%=student.getAddresses().getCity()%>">
+                       value="<%=(student.getAddresses().getCity()!="")?student.getAddresses().getCity():""%>">
             </div>
         </div>
         <br>
@@ -105,7 +119,7 @@
             </div>
             <div class="col-3">
                 <input type="text" class="form-control" placeholder="Address" name="address"
-                       value="<%=student.getAddresses().getAddress()%>">
+                       value="<%=(student.getAddresses().getAddress()!="")?student.getAddresses().getAddress():""%>">
             </div>
         </div>
         <br>
