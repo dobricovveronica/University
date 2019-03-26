@@ -24,18 +24,22 @@
 <form method="post">
 
     <% Student student = new Student();
-        String studentId = (String) request.getAttribute("studentId");%>
-        <%if (!isNull(studentId)){
-        student = (Student) request.getAttribute("student"); }%>
+        long studentId = (Long) request.getAttribute("studentId");
+        if (!isNull(studentId) && studentId != 0) {
+            student = (Student) request.getAttribute("student");
+        }
+
+    %>
 
     <div class="form-group row">
         <div class="col-1">
-            <input type="hidden" name="studentId" <%if (!isNull(studentId)){%>value="<%=student.getId()%><%}%>">
+            <input type="hidden" name="studentId" <%if (studentId!=0){%>value="<%=student.getId()%>"<%}else{%>
+                   value=""<%}%>>
             <label class="col-sm-2 col-form-label">FirstName:</label>
         </div>
         <div class="col-3">
             <input type="text" class="form-control" placeholder="First name" name="first_name"
-                   value="<%=(student.getFirstName()!="")?student.getFirstName():""%>">
+                   value="<%=(studentId!=0)?student.getFirstName():""%>">
         </div>
         <div class="col-1"></div>
         <div class="col-1">
@@ -43,12 +47,14 @@
         </div>
         <div class="col-2">
             <select name="group" class="form-control">
-                <option selected value="<%=student.getGroup().getId()%>"><%=(student.getGroup().getName()!="")?student.getGroup().getName():""%>
+                <option selected
+                        value="<%=(studentId!=0)?student.getGroup().getId():""%>"><%=(studentId != 0) ? student.getGroup().getName() : "Select group"%>
                 </option>
                 <% Set<Group> groups = (Set<Group>) request.getAttribute("groups");
                     for (Group group : groups) {
                 %>
-                <option value="<%=group.getId()%>"><%=group.getName()%></option>
+                <option value="<%=group.getId()%>"><%=group.getName()%>
+                </option>
                 <%}%>
             </select>
         </div>
@@ -60,7 +66,7 @@
             </div>
             <div class="col-3">
                 <input type="text" class="form-control" placeholder="Last name" name="last_name"
-                       value="<%=(student.getLastName()!="")?student.getLastName():""%>">
+                       value="<%=(studentId!=0)?student.getLastName():""%>">
             </div>
         </div>
         <div class="form-group row">
@@ -69,7 +75,7 @@
             </div>
             <div class="col-3">
                 <input type="date" class="form-control" name="date_of_birth" placeholder="Date of birth"
-                       value="<%=(student.getDateOfBirth()!= null)?student.getDateOfBirth():""%>">
+                       value="<%=(studentId!=0)?student.getDateOfBirth():""%>">
             </div>
         </div>
         <div class="form-row">
@@ -78,8 +84,10 @@
             </div>
             <div class="col-2">
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input col-4" type="radio" name="gender" value="M" <%=(student.getGender()=='M')?"checked":""%>>Male<br>
-                    <input class="form-check-input col-4" type="radio" name="gender" value="F" <%=(student.getGender()=='F')?"checked":""%>>Female<br>
+                    <input class="form-check-input col-4" type="radio" name="gender"
+                           value="M" <%=(student.getGender()=='M')?"checked":""%>>Male<br>
+                    <input class="form-check-input col-4" type="radio" name="gender"
+                           value="F" <%=(student.getGender()=='F')?"checked":""%>>Female<br>
                 </div>
             </div>
         </div>
@@ -89,17 +97,18 @@
             </div>
             <div class="col-3">
                 <input type="text" class="form-control" placeholder="Mail" name="mail"
-                       value="<%=(student.getMail()!="")?student.getMail():""%>">
+                       value="<%=(studentId!=0)?student.getMail():""%>">
             </div>
-        </div> <br>
+        </div>
+        <br>
         <div class="form-row">
-            <input type="hidden" name="addressId" value="<%=student.getAddresses().getId()%>">
+            <input type="hidden" name="addressId" value="<%=(studentId!=0)?student.getAddresses().getId():""%>">
             <div class="col-1">
                 <label class="col-sm-2 col-form-label">Country:</label>
             </div>
             <div class="col-3">
                 <input type="text" class="form-control" placeholder="Country" name="country"
-                       value="<%=(student.getAddresses().getCountry()!="")?student.getAddresses().getCountry():""%>">
+                       value="<%=(studentId!=0)?student.getAddresses().getCountry():""%>">
             </div>
         </div>
         <br>
@@ -109,7 +118,7 @@
             </div>
             <div class="col-3">
                 <input type="text" class="form-control" placeholder="City" name="city"
-                       value="<%=(student.getAddresses().getCity()!="")?student.getAddresses().getCity():""%>">
+                       value="<%=(studentId!=0)?student.getAddresses().getCity():""%>">
             </div>
         </div>
         <br>
@@ -119,7 +128,7 @@
             </div>
             <div class="col-3">
                 <input type="text" class="form-control" placeholder="Address" name="address"
-                       value="<%=(student.getAddresses().getAddress()!="")?student.getAddresses().getAddress():""%>">
+                       value="<%=(studentId!=0)?student.getAddresses().getAddress():""%>">
             </div>
         </div>
         <br>
@@ -130,7 +139,6 @@
             <div class="col-1">
                 <select class="form-control" name="phone_type">
                     <option selected>All</option>
-
                     <% Set<PhoneType> phoneTypes = (Set<PhoneType>) request.getAttribute("phoneTypes");
                         for (PhoneType phoneType : phoneTypes) {
                     %>
@@ -160,7 +168,7 @@
         <div class="col-2">
             <button type="submit" class="btn btn-secondary btm-sm">Save</button>
 
-            <button type="button" onclick="window.close()"  class="btn btn-secondary btm-sm">Cancel</button>
+            <button type="button" onclick="window.close()" class="btn btn-secondary btm-sm">Cancel</button>
         </div>
     </div>
 </form>

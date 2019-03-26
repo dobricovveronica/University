@@ -27,15 +27,11 @@ public class StudentServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) {
         String action = request.getParameter("action");
 
-        Person person = new Person();
         Student student = new Student();
-        Address address = new Address();
         LibraryAbonament libraryAbonament = new LibraryAbonament();
         Mark mark = new Mark();
-        Group group = new Group();
         Discipline discipline = new Discipline();
         Teacher teacher = new Teacher();
-
 
         switch (action) {
             case "MARK":
@@ -55,44 +51,13 @@ public class StudentServlet extends HttpServlet {
                 libraryAbonament.setEndDate(LocalDate.parse(String.valueOf(request.getParameter("end_date"))));
                 studentService.updateLibraryAbonamentByStudentId(libraryAbonament);
                 break;
-            case "ADD_STUDENT, EDIT":
-
-                address.setCountry(request.getParameter("country"));
-                address.setCity(request.getParameter("city"));
-                address.setAddress(request.getParameter("address"));
-
-                person.setFirstName(request.getParameter("first_name"));
-                person.setLastName(request.getParameter("last_name"));
-                person.setDateOfBirth(LocalDate.parse(String.valueOf(request.getParameter("date_of_birth"))));
-                person.setGender(request.getParameter("gender").charAt(0));
-                person.setMail(request.getParameter("mail"));
-                group.setId(Long.parseLong(request.getParameter("group")));
-//
-                Set<Phone> phones = new HashSet<>();
-                Phone phone = new Phone();
-                PhoneType phoneType = new PhoneType();
-                phoneType.setId(Long.parseLong(request.getParameter("phone_type")));
-                phone.setPhoneType(phoneType);
-                phone.setValue(request.getParameter("phone"));
-                phones.add(phone);
-
-                person.setPhones(phones);
-//                person.setAddresses(address);
-//                studentService.addNewStudent(person, group);
-
-
-                if (person.getId() != 0) {
-                    address.setId(Long.parseLong(request.getParameter("addressId")));
-                    person.setId(Long.parseLong(request.getParameter("studentId")));
-                    person.setAddresses(address);
+            case "EDIT":
+                student = buildStudent(request);
+                if (student.getId() != 0) {
                     studentService.updateStudent(student);
                 } else {
-
-                    person.setAddresses(address);
                     studentService.addNewStudent(student);
                 }
-//                requestDispatcher = getServletContext().getRequestDispatcher("/WEB-INF/views/addStudent.jsp");
-//                requestDispatcher requestDispatcher.forward(request, response);
                 break;
             case "DELETE":
                 String[] studentsId;
@@ -100,20 +65,68 @@ public class StudentServlet extends HttpServlet {
                 studentService.deleteStudent(studentsId);
                 break;
             case "SEARCH":
-
-                String name = request.getParameter("name");
-                String studentAddress = request.getParameter("studentAddress");
+                SearchStudent searchStudent = new SearchStudent();
+                searchStudent.setName(request.getParameter("name"));
+                searchStudent.setStudentAddress(request.getParameter("studentAddress"));
 //                LocalDate startDate = LocalDate.parse(String.valueOf(request.getParameter("startDate")));
 //                LocalDate endDate = LocalDate.parse(String.valueOf(request.getParameter("endDate")));
-                Long disciplineId = Long.parseLong(request.getParameter("discipline"));
-                String disciplineTitle = request.getParameter("disciplineTitle");
-                Long groupId = Long.parseLong(request.getParameter("group"));
-                String gender = request.getParameter("gender");
+                if (request.getParameter("discipline") != null){
+                searchStudent.setDisciplineId(request.getParameter("discipline"));}
+                searchStudent.setDisciplineTitle(request.getParameter("disciplineTitle"));
+                if (request.getParameter("group") != null){
+                searchStudent.setGroupId(request.getParameter("group"));}
+                searchStudent.setGender(request.getParameter("gender"));
 
-                studentService.searchStudents(name, studentAddress, disciplineId, disciplineTitle, groupId, gender);
+                studentService.searchStudents(searchStudent);
 
                 break;
         }
+    }
+
+    public Student buildStudent(HttpServletRequest request) {
+        Student student = new Student();
+        Address address = new Address();
+        LibraryAbonament libraryAbonament = new LibraryAbonament();
+        Group group = new Group();
+
+        student.setId(Long.parseLong(request.getParameter("studentId")));
+        address.setCountry(request.getParameter("country"));
+        address.setCity(request.getParameter("city"));
+        address.setAddress(request.getParameter("address"));
+
+        student.setFirstName(request.getParameter("first_name"));
+        student.setLastName(request.getParameter("last_name"));
+
+        student.setDateOfBirth(LocalDate.parse(String.valueOf(request.getParameter("date_of_birth"))));
+        student.setGender(request.getParameter("gender").charAt(0));
+        student.setMail(request.getParameter("mail"));
+
+        group.setId(Long.parseLong(request.getParameter("group")));
+        student.setGroup(group);
+
+        libraryAbonament.setStatus("None");
+        student.setLibraryAbonament(libraryAbonament);
+//
+        Set<Phone> phones = new HashSet<>();
+        Phone phone = new Phone();
+        PhoneType phoneType = new PhoneType();
+        phoneType.setId(Long.parseLong(request.getParameter("phone_type")));
+        phone.setPhoneType(phoneType);
+        phone.setValue(request.getParameter("phone"));
+        phones.add(phone);
+
+        student.setPhones(phones);
+
+        if (student.getId() != 0) {
+            address.setId(Long.parseLong(request.getParameter("addressId")));
+            student.setId(Long.parseLong(request.getParameter("studentId")));
+            student.setAddresses(address);
+
+        } else {
+            student.setAddresses(address);
+
+        }
+        return student;
     }
 
     @Override
@@ -150,19 +163,17 @@ public class StudentServlet extends HttpServlet {
                 break;
             case "EDIT":
                 studentId = Long.parseLong(req.getParameter("studentId"));
-                if (!isNull(studentId)){
-                student = studentService.getStudentById(studentId);
-                req.setAttribute("student", student);}
+                if (!isNull(studentId) && studentId != 0) {
+                    student = studentService.getStudentById(studentId);
+                    req.setAttribute("student", student);
+                }
                 req.setAttribute("studentId", studentId);
                 groups = studentService.getAllGroups();
                 req.setAttribute("groups", groups);
-                disciplines = studentService.getDisciplineById(studentId);
-                req.setAttribute("disciplines", disciplines);
                 phoneTypes = studentService.getAllPhoneTypes();
                 req.setAttribute("phoneTypes", phoneTypes);
                 requestDispatcher = getServletContext().getRequestDispatcher("/WEB-INF/views/student.jsp");
                 requestDispatcher.forward(req, resp);
-
 
                 break;
             case "MARK":

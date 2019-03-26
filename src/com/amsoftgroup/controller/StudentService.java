@@ -21,6 +21,8 @@ public class StudentService {
     private MarkDao markDao;
     private AddressDao addressDao;
     private PhoneDao phoneDao;
+    private SearchStudentDao searchStudentDao;
+
 
     public StudentService() {
         Connection connection = DataBaseConnection.initializeDatabaseConnection();
@@ -34,6 +36,7 @@ public class StudentService {
         this.markDao = new MarkDao(connection);
         this.addressDao = new AddressDao(connection);
         this.phoneDao = new PhoneDao(connection);
+        this.searchStudentDao = new SearchStudentDao(connection);
 
     }
 
@@ -78,16 +81,19 @@ public class StudentService {
 
     public void addNewStudent(Student student) {
 
-
-        student.getAddresses().setId(addressDao.insertAddress(student.getAddresses()));
-        student.getLibraryAbonament().setId(libraryAbonamentDao.insertLibraryAbonament(student.getLibraryAbonament()));
+        Address address = new Address();
+        address.setId(addressDao.insertAddress(student.getAddresses()));
+        student.setAddresses(address);
+        LibraryAbonament libraryAbonament = new LibraryAbonament();
+        libraryAbonament.setId(libraryAbonamentDao.insertLibraryAbonament(student.getLibraryAbonament()));
+        student.setLibraryAbonament(libraryAbonament);
         student.setId(personDao.insertPerson(student));
 
         Set<Phone> phones = new HashSet<>();
         for (Phone phone : student.getPhones()) {
             phone.setId(phoneDao.insertPhone(phone));
             phoneDao.addPhoneToPerson(phone, student);
-
+            phones.add(phone);
         }
 
         studentDao.insertStudent(student);
@@ -99,14 +105,12 @@ public class StudentService {
         addressDao.updateAddress(student.getAddresses());
         personDao.updatePerson(student);
 
-//        Set<Phone> phones = new HashSet<>();
-//        for (Phone phone : person.getPhones()) {
-////            phone.setId(phoneDao.insertPhone(phone, phone_type));
-////            person.setId(personDao.insertPerson(person, address, libraryAbonament));
-////            phoneDao.addPhoneToPerson(phone.getId(), student.getId());
-//            phone.setId(phoneDao.insertPhone(phone));
-//            phoneDao.addPhoneToPerson(phone, person);
-//        }
+        Set<Phone> phones = new HashSet<>();
+        for (Phone phone : student.getPhones()) {
+            phoneDao.updatePhone(phone);
+//            phoneDao.addPhoneToPerson(phone, student);
+            phones.add(phone);
+        }
 
         studentDao.updateStudent(student);
     }
@@ -119,9 +123,11 @@ public class StudentService {
         libraryAbonamentDao.updateLibraryAbonament(libraryAbonament);
     }
 
-    public void searchStudents(String name, String studentAddress, Long discipline_id, String discipline_title, Long group_id, String gender){
-        studentDao.searchStudents(name, studentAddress,  discipline_id, discipline_title, group_id, gender);
-    };
+    public void searchStudents(SearchStudent searchStudent) {
+        searchStudentDao.searchStudents(searchStudent);
+    }
+
+    ;
 
     public void deleteStudent(String[] list) {
         Long id;

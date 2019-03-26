@@ -88,7 +88,7 @@ public class LibraryAbonamentDao {
 //    }
 
     public Long insertLibraryAbonament(LibraryAbonament libraryAbonament) {
-        String sql = "INSERT INTO university.library_abonaments VALUES(?) returning id";
+        String sql = "INSERT INTO university.library_abonaments VALUES(?, ?, ?) returning id";
         Long libraryAbonamentId = 0L;
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
@@ -119,7 +119,6 @@ public class LibraryAbonamentDao {
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
                 LibraryAbonament libraryAbonament = new LibraryAbonament();
-//                libraryAbonament.setId(Long.parseLong(rs.getString("laid")));
                 libraryAbonament.setStatus(rs.getString("status"));
                 libraryAbonaments.add(libraryAbonament);
             }

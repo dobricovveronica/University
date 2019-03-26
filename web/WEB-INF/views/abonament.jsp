@@ -1,6 +1,7 @@
 <%@ page import="com.amsoftgroup.model.LibraryAbonament" %>
 <%@ page import="java.util.Set" %>
-<%@ page import="com.amsoftgroup.model.Student" %><%--
+<%@ page import="com.amsoftgroup.model.Student" %>
+<%@ page import="static java.util.Objects.isNull" %><%--
   Created by IntelliJ IDEA.
   User: vdobricov
   Date: 3/14/2019
@@ -19,6 +20,13 @@
            form.submit();
            window.close();
         }
+        function inactive() {
+
+            if (document.getElementsByName("status").values() == "None"){
+                document.getElementsByName("start_date").disabled = true;
+                document.getElementsByName("end_date").disabled = true;
+            }
+        }
     </script>
 </head>
 <body>
@@ -33,7 +41,7 @@
             <label class="col-sm-2 col-form-label">Status:</label>
         </div>
         <div class="col-3">
-            <select name="status" class="form-control">
+            <select name="status" class="form-control" onchange="inactive()">
                 <option selected><%=student.getLibraryAbonament().getStatus()%></option>
                 <% Set<LibraryAbonament> libraryAbonaments = (Set<LibraryAbonament>) request.getAttribute("libraryAbonaments");
                     for (LibraryAbonament libraryAbonament : libraryAbonaments) {
@@ -50,7 +58,7 @@
             <label class="col-sm-2 col-form-label">StartDate:</label>
         </div>
         <div class="col-3">
-            <input type="date" class="form-control" name="start_date" value="<%=student.getLibraryAbonament().getStartDate()%>">
+            <input type="date" class="form-control" name="start_date" value="<%=((student.getLibraryAbonament().getStartDate() != null)?student.getLibraryAbonament().getStartDate():"Select date")%>">
         </div>
     </div>
     <div class="form-group row">
@@ -58,7 +66,7 @@
             <label class="col-sm-2 col-form-label">EndDate:</label>
         </div>
         <div class="col-3">
-            <input type="date" class="form-control" name="end_date" value="<%=student.getLibraryAbonament().getEndDate()%>">
+            <input type="date" class="form-control" name="end_date" value="<%=((student.getLibraryAbonament().getEndDate() != null)?student.getLibraryAbonament().getEndDate():"Select date")%>">
         </div>
     </div>
     <div class="form-row">

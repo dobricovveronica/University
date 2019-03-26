@@ -73,11 +73,11 @@
         </div>
         <div class="col-2">
             <select id="inputState" class="form-control" name="discipline">
-                <option  value="" selected>All</option>
+                <option value="" selected>All</option>
                 <% Set<Discipline> disciplines = (Set<Discipline>) request.getAttribute("disciplines");
                     for (Discipline discipline : disciplines) {
                 %>
-                <option name="discipline" value="<%=discipline.getId()%>"><%=discipline.getTitle()%>
+                <option value="<%=discipline.getId()%>"><%=discipline.getTitle()%>
                 </option>
                 <%}%>
             </select>
@@ -97,7 +97,7 @@
                 <% Set<Group> groups = (Set<Group>) request.getAttribute("groups");
                     for (Group group : groups) {
                 %>
-                <option  value="<%=group.getId()%>"><%=group.getName()%>
+                <option value="<%=group.getId()%>"><%=group.getName()%>
                 </option>
                 <%}%>
             </select>
@@ -118,7 +118,7 @@
             <div class="form-check form-check-inline">
                 <input class="form-check-input col-2" type="radio" name="gender" value="M"> Male<br>
                 <input class="form-check-input col-2" type="radio" name="gender" value="F"> Female<br>
-                <input class="form-check-input col-2" type="radio" name="gender"  disabled> All<br>
+                <input class="form-check-input col-2" type="radio" name="gender" value="" checked> All<br>
             </div>
         </div>
         <div class="col-3"></div>
@@ -180,9 +180,9 @@
                    onclick="window.open('/student?action=LIBRARY_ABONAMENT&studentId='+ <%=student.getId()%>,'MyWindow', 200, 200);
                            return false;"><%="Status: " + student.getLibraryAbonament().getStatus()%>
             </a><br>
-                <p <%=(!student.getLibraryAbonament().getStatus().equals("Active"))?"hidden":""%>>
-                From: <%=student.getLibraryAbonament().getStartDate()%><br>
-                To: <%=student.getLibraryAbonament().getEndDate()%>
+                <p <%=(!student.getLibraryAbonament().getStatus().equals("Active")) ? "hidden" : ""%>>
+                    From: <%=student.getLibraryAbonament().getStartDate()%><br>
+                    To: <%=student.getLibraryAbonament().getEndDate()%>
                 </p>
             </td>
             <td><%=student.getGroup().getName()%>
@@ -211,9 +211,9 @@
     </table>
 
     <button type="submit" class="btn btn-secondary btm-sm" name="add_student"
-            onclick="window.open('/student?action=EDIT','MyWindow' ,400,400);">Add New
+            onclick="window.open('/student?action=EDIT&studentId=0','MyWindow' ,400,400);">Add New
     </button>
-<%--    <input type="hidden" name="action" value="DELETE">--%>
+    <%--    <input type="hidden" name="action" value="DELETE">--%>
     <button type="submit" class="btn btn-secondary btm-sm" id="delete"
             onClick="refresh()">Delete
     </button>
