@@ -71,6 +71,8 @@ public class StudentService {
         return teacherDao.getAllTeacher();
     }
 
+    public Set<Teacher> getTeacherByDisciplineId(Discipline discipline){ return teacherDao.getTeacherByDisciplineId(discipline);}
+
     public Set<LibraryAbonament> getAllAbonaments() {
         return libraryAbonamentDao.getAllAbonaments();
     }

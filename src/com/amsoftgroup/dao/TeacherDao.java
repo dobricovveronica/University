@@ -1,5 +1,6 @@
 package com.amsoftgroup.dao;
 
+import com.amsoftgroup.model.Discipline;
 import com.amsoftgroup.model.Teacher;
 
 import java.sql.Connection;
@@ -88,6 +89,30 @@ public class TeacherDao {
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
 
+            System.out.println(statement.toString());
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                Teacher teacher = new Teacher();
+                teacher.setId(Long.parseLong(rs.getString("tid")));
+                teacher.setFirstName(rs.getString("first_name"));
+                teacher.setLastName(rs.getString("last_name"));
+                teachers.add(teacher);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return teachers;
+    }
+
+    public Set<Teacher> getTeacherByDisciplineId(Discipline discipline) {
+        String sql = "Select P.id, P.first_name, P.last_name, T.id as tid, D.id, D.teacher_id from university.persons as P " +
+                "inner join university.teachers as T on T.id = P.id " +
+                "left join university.disciplines as D on D.teacher_id = P.id" +
+                "where D.id = ?";
+        Set<Teacher> teachers = new HashSet<>();
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setLong(1, discipline.getId());
             System.out.println(statement.toString());
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {

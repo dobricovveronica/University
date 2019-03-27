@@ -9,6 +9,12 @@
     <style>
         <%@include file="/WEB-INF/views/css/bootstrap.min.css" %>
     </style>
+    <script>
+        function teacherSelect() {
+
+
+        }
+    </script>
 </head>
 <body>
 <%Student student = (Student) request.getAttribute("student"); %>
@@ -27,7 +33,7 @@
                     for (Discipline discipline : disciplines) {
                 %>
                 <script>console.log("<%=discipline.getId()%>")</script>
-                <option value="<%=discipline.getId()%>"><%=discipline.getTitle()%></option>
+                <option value="<%=discipline.getId()%>" onchange="teacherSelect()"><%=discipline.getTitle()%></option>
                 <%}%>
             </select>
         </div>

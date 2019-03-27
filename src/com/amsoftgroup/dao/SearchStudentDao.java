@@ -12,6 +12,7 @@ import java.util.Set;
 
 public class SearchStudentDao {
     private Connection connection;
+    private StudentDao studentDao;
 
     public SearchStudentDao(Connection connection) {
         this.connection = connection;
@@ -63,46 +64,16 @@ public class SearchStudentDao {
 //            statement.setDate(4, Date.valueOf(start_date));
 //            statement.setDate(5,  Date.valueOf(end_date));
             if (searchStudent.getGroupId() != null){
-            statement.setString(6, searchStudent.getGroupId());}
+            statement.setLong(6, searchStudent.getGroupId());}
             statement.setString(7, searchStudent.getGender());
             if (searchStudent.getDisciplineId() != null){
-            statement.setString(8, searchStudent.getDisciplineId());}
+            statement.setLong(8, searchStudent.getDisciplineId());}
             statement.setString(9, searchStudent.getDisciplineTitle());
             System.out.println(statement.toString());
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
-                Student student = new Student();
-                student.setId(Long.parseLong(rs.getString("id")));
-                student.setFirstName(rs.getString("first_name"));
-                student.setLastName(rs.getString("last_name"));
-                student.setDateOfBirth(LocalDate.parse(String.valueOf(rs.getDate("date_of_birth"))));
-                student.setGender(rs.getString("gender").charAt(0));
-                student.setMail(rs.getString("mail"));
+                students = studentDao.getAllStudents();
 
-                Address address = new Address();
-                address.setId(Long.parseLong(rs.getString("aid")));
-                address.setCountry(rs.getString("country"));
-                address.setAddress(rs.getString("address"));
-                address.setCity(rs.getString("city"));
-                student.setAddresses(address);
-
-                LibraryAbonament libraryAbonament = new LibraryAbonament();
-                libraryAbonament.setId(Long.parseLong(rs.getString("laid")));
-                libraryAbonament.setStatus(rs.getString("status"));
-                libraryAbonament.setStartDate(LocalDate.parse(String.valueOf(rs.getDate("start_date"))));
-                libraryAbonament.setEndDate(LocalDate.parse(String.valueOf(rs.getDate("end_date"))));
-                student.setLibraryAbonament(libraryAbonament);
-
-                student.setPhones(new PhoneDao(connection).getPhonesById(student.getId()));
-
-                Group group = new Group();
-                group.setId(Long.parseLong(rs.getString("gid")));
-                group.setName(rs.getString("gname"));
-                student.setGroup(group);
-
-                student.setDisciplines(new DisciplineDao(connection).getDisciplineById(student.getId()));
-
-                students.add(student);
             }
         } catch (SQLException e) {
             e.printStackTrace();

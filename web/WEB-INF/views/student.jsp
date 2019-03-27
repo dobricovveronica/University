@@ -18,10 +18,25 @@
         <%@include file="/WEB-INF/views/css/bootstrap.min.css" %>
         <%@include file="/WEB-INF/views/css/style.css" %>
     </style>
+    <script>
+        function previewFile() {
+            var preview = document.querySelector('img');
+            var file = document.querySelector('input[type=file]').files[0];
+            var reader = new FileReader();
+
+            reader.addEventListener("load", function () {
+                preview.src = reader.result;
+            }, false);
+
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
 </head>
 <body>
 <h1>Add / Edit Student</h1>
-<form method="post">
+<form method="post" enctype="multipart/form-data">
 
     <% Student student = new Student();
         long studentId = (Long) request.getAttribute("studentId");
@@ -45,7 +60,7 @@
         <div class="col-1">
             <label class="col-sm-2 col-form-label">Group:</label>
         </div>
-        <div class="col-2">
+        <div class="col-3">
             <select name="group" class="form-control">
                 <option selected
                         value="<%=(studentId!=0)?student.getGroup().getId():""%>"><%=(studentId != 0) ? student.getGroup().getName() : "Select group"%>
@@ -67,6 +82,14 @@
             <div class="col-3">
                 <input type="text" class="form-control" placeholder="Last name" name="last_name"
                        value="<%=(studentId!=0)?student.getLastName():""%>">
+            </div>
+            <div class="col-1"></div>
+            <div class="col-1">
+                <label class="col-sm-2 col-form-label">Mail:</label>
+            </div>
+            <div class="col-3">
+                <input type="text" class="form-control" placeholder="Mail" name="mail"
+                       value="<%=(studentId!=0)?student.getMail():""%>">
             </div>
         </div>
         <div class="form-group row">
@@ -91,16 +114,7 @@
                 </div>
             </div>
         </div>
-        <div class="form-row">
-            <div class="col-1">
-                <label class="col-sm-2 col-form-label">Mail:</label>
-            </div>
-            <div class="col-3">
-                <input type="text" class="form-control" placeholder="Mail" name="mail"
-                       value="<%=(studentId!=0)?student.getMail():""%>">
-            </div>
-        </div>
-        <br>
+
         <div class="form-row">
             <input type="hidden" name="addressId" value="<%=(studentId!=0)?student.getAddresses().getId():""%>">
             <div class="col-1">
@@ -154,12 +168,17 @@
                 <button type="button" class="btn btn-success">Add</button>
                 <button type="button" class="btn btn-danger">Delete</button>
             </div>
-            <div class="col-2">
-                <input type="text" class="form-control" placeholder="Picture File" name="image">
+            <div class="col-0.5"></div>
+            <div class="col-3">
+                <img src="<%=(studentId!=0)?student.getPicture():""%>" class="rounded float-left"
+                     style="position:absolute; bottom: 100px" height="200" width="178" name="image">
+                <input type="file" id="customFile" name="image" onchange="previewFile()" multiple>
+                <label class="custom-file-label" placeholder="Picture File" for="customFile"></label>
+
             </div>
-            <div class="col-1">
-                <button type="button" class="btn btn-secondary btm-sm">Browse</button>
-            </div>
+            <%--            <div class="col-1">--%>
+            <%--                <button type="button" class="btn btn-secondary btm-sm">Browse</button>--%>
+            <%--            </div>--%>
         </div>
         <br>
     </div>

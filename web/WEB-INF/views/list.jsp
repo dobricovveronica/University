@@ -161,7 +161,9 @@
             </td>
             <td><input type="checkbox" name="check[]" id="myCheck" value="<%=student.getId()%>"
                        onclick="idChecked(value)"></td>
-            <td>Image</td>
+            <td>Image
+            <img src="<%=student.getPicture()%>" width="50" height="50" alt="image">
+            </td>
             <td><%=student.getFirstName() + " " + student.getLastName()%>
             </td>
             <td><%=student.getDateOfBirth()%>

@@ -3,9 +3,9 @@ package com.amsoftgroup.model;
 public class SearchStudent {
     private String name;
     private String studentAddress;
-    private String  disciplineId;
+    private Long  disciplineId;
     private String disciplineTitle;
-    private String groupId;
+    private Long groupId;
     private String gender;
 
     public String getName() {
@@ -24,11 +24,11 @@ public class SearchStudent {
         this.studentAddress = studentAddress;
     }
 
-    public String getDisciplineId() {
+    public Long getDisciplineId() {
         return disciplineId;
     }
 
-    public void setDisciplineId(String disciplineId) {
+    public void setDisciplineId(Long disciplineId) {
         this.disciplineId = disciplineId;
     }
 
@@ -40,11 +40,11 @@ public class SearchStudent {
         this.disciplineTitle = disciplineTitle;
     }
 
-    public String getGroupId() {
+    public Long getGroupId() {
         return groupId;
     }
 
-    public void setGroupId(String groupId) {
+    public void setGroupId(Long groupId) {
         this.groupId = groupId;
     }
 

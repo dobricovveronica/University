@@ -1,22 +1,29 @@
 package com.amsoftgroup.controller;
 
 import com.amsoftgroup.model.*;
+import sun.misc.IOUtils;
 
+import javax.imageio.ImageIO;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
+import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 import static java.util.Objects.isNull;
 
 @WebServlet("/student")
+@MultipartConfig
 public class StudentServlet extends HttpServlet {
     private StudentService studentService;
 
@@ -24,7 +31,7 @@ public class StudentServlet extends HttpServlet {
         this.studentService = StudentService.getInstance();
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         String action = request.getParameter("action");
 
         Student student = new Student();
@@ -71,10 +78,10 @@ public class StudentServlet extends HttpServlet {
 //                LocalDate startDate = LocalDate.parse(String.valueOf(request.getParameter("startDate")));
 //                LocalDate endDate = LocalDate.parse(String.valueOf(request.getParameter("endDate")));
                 if (request.getParameter("discipline") != null){
-                searchStudent.setDisciplineId(request.getParameter("discipline"));}
+                searchStudent.setDisciplineId(Long.parseLong(request.getParameter("discipline")));}
                 searchStudent.setDisciplineTitle(request.getParameter("disciplineTitle"));
                 if (request.getParameter("group") != null){
-                searchStudent.setGroupId(request.getParameter("group"));}
+                searchStudent.setGroupId(Long.parseLong(request.getParameter("group")));}
                 searchStudent.setGender(request.getParameter("gender"));
 
                 studentService.searchStudents(searchStudent);
@@ -83,7 +90,7 @@ public class StudentServlet extends HttpServlet {
         }
     }
 
-    public Student buildStudent(HttpServletRequest request) {
+    public Student buildStudent(HttpServletRequest request) throws IOException, ServletException {
         Student student = new Student();
         Address address = new Address();
         LibraryAbonament libraryAbonament = new LibraryAbonament();
@@ -100,6 +107,18 @@ public class StudentServlet extends HttpServlet {
         student.setDateOfBirth(LocalDate.parse(String.valueOf(request.getParameter("date_of_birth"))));
         student.setGender(request.getParameter("gender").charAt(0));
         student.setMail(request.getParameter("mail"));
+
+        InputStream inputStream = null;
+        Part filePart = request.getPart("image");
+        if (filePart != null){
+            inputStream = filePart.getInputStream();
+            BufferedImage bufferedImage = ImageIO.read(inputStream);
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            ImageIO.write(bufferedImage, "jpg", byteArrayOutputStream);
+            student.setPicture(byteArrayOutputStream.toByteArray());
+//            student.setPicture(new ByteArrayInputStream(inputStream));
+        }
+
 
         group.setId(Long.parseLong(request.getParameter("group")));
         student.setGroup(group);

@@ -1,5 +1,6 @@
 package com.amsoftgroup.model;
 
+import javax.servlet.http.Part;
 import java.time.LocalDate;
 import java.util.Set;
 
