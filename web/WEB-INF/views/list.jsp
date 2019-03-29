@@ -33,7 +33,19 @@
                 }, 1000); // check every second
             }
         }
-
+        function activateInput(name) {
+            document.getElementById('search').disabed = true;
+            document.getElementById('reset').disabed = true;
+            document.getElementById('delete').disabed = true;
+            // document.getElementById('delete').setAttribute("disabled", true);
+            if (name == "search"){
+                document.getElementById('search').disabed = false;
+            }if (name == "reset"){
+                document.getElementById('reset').disabed = false;
+            }if (name == "delete"){
+                document.getElementById('delete').disabed = false;
+            }
+        }
         // <label class="col-sm-2 col-form-label">Gender:</label>Id('delete').onclick = function() {
         //     document.forms.my.reset(); // сбрасываем форму
         //     location.reload(); // перезагружаем страницу
@@ -124,11 +136,12 @@
         </div>
         <div class="col-3"></div>
         <div class="col-1">
-            <input type="hidden" name="action" value="SEARCH" disabled>
-            <button type="submit" class="btn btn-secondary btm-sm" name="search">Search</button>
+            <input type="hidden" id="search" name="action" value="SEARCH" disabled="">
+            <button type="submit" class="btn btn-secondary btm-sm" name="search" onclick="activateInput(name)">Search</button>
         </div>
         <div class="col">
-            <button type="reset" class="btn btn-secondary btm-sm" name="reset">Reset</button>
+            <input type="hidden" id="reset" name="action" value="RESET" disabled="">
+            <button type="reset" class="btn btn-secondary btm-sm" name="reset" onclick="activateInput(name)">Reset</button>
         </div>
     </div>
 </form>
@@ -222,9 +235,8 @@
     <button type="submit" class="btn btn-secondary btm-sm" name="add_student"
             onclick="window.open('/student?action=EDIT&studentId=0','MyWindow' ,400,400);">Add New
     </button>
-    <%--    <input type="hidden" name="action" value="DELETE">--%>
-    <button type="submit" class="btn btn-secondary btm-sm" id="delete"
-            onClick="refresh()">Delete
+        <input type="hidden" name="action" id="delete" value="DELETE" disabled="">
+    <button type="submit" class="btn btn-secondary btm-sm" onchange="activateInput(name)">Delete
     </button>
 </form>
 <%--<input type="button" value="Reload Page" onClick="document.location.reload(true)">--%>

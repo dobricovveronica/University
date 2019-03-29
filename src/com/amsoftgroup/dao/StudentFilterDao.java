@@ -13,8 +13,10 @@ public class StudentFilterDao {
     private Connection connection;
     private StudentDao studentDao;
 
+
     public StudentFilterDao(Connection connection) {
         this.connection = connection;
+        this.studentDao = new StudentDao(connection);
     }
 
     public Set<Student> searchStudents(StudentFilter studentFilter) {
@@ -22,7 +24,7 @@ public class StudentFilterDao {
                 "P.first_name, " +
                 "P.last_name, " +
                 "P.date_of_birth, " +
-                "P.gender, " +
+                "P.gender, P.picture, " +
                 "P.mail, " +
                 "A.id   as aid, " +
                 "A.country, " +
@@ -55,8 +57,8 @@ public class StudentFilterDao {
             System.out.println(statement.toString());
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
-                Long studentId = Long.parseLong(rs.getString("pid"));
-                student = new StudentDao(connection).getStudentById(studentId);
+                student.setId(Long.parseLong(rs.getString("pid")));
+                student = studentDao.builStudent(rs, student);
                 students.add(student);
             }
 
@@ -69,7 +71,7 @@ public class StudentFilterDao {
     public String queryBuilder(StudentFilter studentFilter) {
         StringBuilder builder = new StringBuilder();
         if (studentFilter != null) {
-            builder.append(" where");
+            builder.append(" where ");
             int count = 0;
             String prefix = " and ";
             if (studentFilter.getName() != null) {

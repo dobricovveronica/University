@@ -102,40 +102,7 @@ public class StudentDao {
             while (rs.next()) {
                 Student student = new Student();
                 student.setId(Long.parseLong(rs.getString("id")));
-                student.setFirstName(rs.getString("first_name"));
-                student.setLastName(rs.getString("last_name"));
-                student.setDateOfBirth(LocalDate.parse(String.valueOf(rs.getDate("date_of_birth"))));
-                student.setGender(rs.getString("gender").charAt(0));
-                student.setMail(rs.getString("mail"));
-                if (rs.getBytes("picture") != null){
-                student.setPicture(rs.getBytes("picture"));}
-
-                Address address = new Address();
-                address.setId(Long.parseLong(rs.getString("aid")));
-                address.setCountry(rs.getString("country"));
-                address.setAddress(rs.getString("address"));
-                address.setCity(rs.getString("city"));
-                student.setAddresses(address);
-
-                LibraryAbonament libraryAbonament = new LibraryAbonament();
-                libraryAbonament.setId(Long.parseLong(rs.getString("laid")));
-                libraryAbonament.setStatus(rs.getString("status"));
-                if (rs.getDate("start_date") != null) {
-                    libraryAbonament.setStartDate(LocalDate.parse(String.valueOf(rs.getDate("start_date"))));
-                }
-                if (rs.getDate("end_date") != null) {
-                    libraryAbonament.setEndDate(LocalDate.parse(String.valueOf(rs.getDate("end_date"))));
-                }
-                student.setLibraryAbonament(libraryAbonament);
-
-                student.setPhones(new PhoneDao(connection).getPhonesById(student.getId()));
-
-                Group group = new Group();
-                group.setId(Long.parseLong(rs.getString("gid")));
-                group.setName(rs.getString("gname"));
-                student.setGroup(group);
-
-                student.setDisciplines(new DisciplineDao(connection).getDisciplineById(student.getId()));
+                student = builStudent(rs, student);
 
                 students.add(student);
             }
@@ -146,8 +113,8 @@ public class StudentDao {
     }
 
     public Student getStudentById(Long id) {
-        String sql = "select  " +
-                "P.first_name as pfn, " +
+        String sql = "select P.id, " +
+                "P.first_name, " +
                 "P.last_name, " +
                 "P.date_of_birth, " +
                 "P.gender, " +
@@ -163,7 +130,7 @@ public class StudentDao {
                 "inner join university.persons as P on P.id = S.id " +
                 "left join university.addresses as A on P.address_id = A.id " +
                 "left join university.library_abonaments as LA on P.library_abonament_id = LA.id " +
-                "left join university.groups as G on G.id = S.group_id " +
+                "left join university.groups as G on G.id = S.group_id order by P.id " +
                 "where S.id = ?";
         Student student = new Student();
         try {
@@ -174,45 +141,51 @@ public class StudentDao {
             student.setId(id);
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
-                student.setFirstName(rs.getString("pfn"));
-                student.setLastName(rs.getString("last_name"));
-                student.setDateOfBirth(LocalDate.parse(String.valueOf(rs.getDate("date_of_birth"))));
-                student.setGender(rs.getString("gender").charAt(0));
-                student.setMail(rs.getString("mail"));
-                if (rs.getBytes("picture") != null){
-                    student.setPicture(rs.getBytes("picture"));}
-
-                Address address = new Address();
-                address.setId(Long.parseLong(rs.getString("aid")));
-                address.setCountry(rs.getString("country"));
-                address.setAddress(rs.getString("address"));
-                address.setCity(rs.getString("city"));
-                student.setAddresses(address);
-
-                LibraryAbonament libraryAbonament = new LibraryAbonament();
-                libraryAbonament.setId(Long.parseLong(rs.getString("laid")));
-                libraryAbonament.setStatus(rs.getString("status"));
-                if (rs.getDate("start_date") != null) {
-                    libraryAbonament.setStartDate(LocalDate.parse(String.valueOf(rs.getDate("start_date"))));
-                }
-
-                if (rs.getDate("end_date") != null) {
-                    libraryAbonament.setEndDate(LocalDate.parse(String.valueOf(rs.getDate("end_date"))));
-                }
-                student.setLibraryAbonament(libraryAbonament);
-
-                student.setPhones(new PhoneDao(connection).getPhonesById(student.getId()));
-
-                Group group = new Group();
-                group.setId(Long.parseLong(rs.getString("gid")));
-                group.setName(rs.getString("gname"));
-                student.setGroup(group);
-
-                student.setDisciplines(new DisciplineDao(connection).getDisciplineById(student.getId()));
+                student = builStudent(rs, student);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return student;
+    }
+
+    public Student builStudent(ResultSet rs, Student student) throws SQLException {
+        student.setFirstName(rs.getString("first_name"));
+        student.setLastName(rs.getString("last_name"));
+        student.setDateOfBirth(LocalDate.parse(String.valueOf(rs.getDate("date_of_birth"))));
+        student.setGender(rs.getString("gender").charAt(0));
+        student.setMail(rs.getString("mail"));
+        if (rs.getBytes("picture") != null) {
+            student.setPicture(rs.getBytes("picture"));
+        }
+
+        Address address = new Address();
+        address.setId(Long.parseLong(rs.getString("aid")));
+        address.setCountry(rs.getString("country"));
+        address.setAddress(rs.getString("address"));
+        address.setCity(rs.getString("city"));
+        student.setAddresses(address);
+
+        LibraryAbonament libraryAbonament = new LibraryAbonament();
+        libraryAbonament.setId(Long.parseLong(rs.getString("laid")));
+        libraryAbonament.setStatus(rs.getString("status"));
+        if (rs.getDate("start_date") != null) {
+            libraryAbonament.setStartDate(LocalDate.parse(String.valueOf(rs.getDate("start_date"))));
+        }
+        if (rs.getDate("end_date") != null) {
+            libraryAbonament.setEndDate(LocalDate.parse(String.valueOf(rs.getDate("end_date"))));
+        }
+        student.setLibraryAbonament(libraryAbonament);
+
+
+        student.setPhones(new PhoneDao(connection).getPhonesById(student.getId()));
+
+        Group group = new Group();
+        group.setId(Long.parseLong(rs.getString("gid")));
+        group.setName(rs.getString("gname"));
+        student.setGroup(group);
+
+        student.setDisciplines(new DisciplineDao(connection).getDisciplineById(student.getId()));
         return student;
     }
 }
