@@ -1,7 +1,6 @@
 package com.amsoftgroup.controller;
 
 import com.amsoftgroup.model.*;
-import sun.misc.IOUtils;
 
 import javax.imageio.ImageIO;
 import javax.servlet.RequestDispatcher;
@@ -72,20 +71,39 @@ public class StudentServlet extends HttpServlet {
                 studentService.deleteStudent(studentsId);
                 break;
             case "SEARCH":
-                SearchStudent searchStudent = new SearchStudent();
-                searchStudent.setName(request.getParameter("name"));
-                searchStudent.setStudentAddress(request.getParameter("studentAddress"));
+                StudentFilter studentFilter = new StudentFilter();
+                if (!request.getParameter("name").equals("")) {
+                    studentFilter.setName(request.getParameter("name"));
+                }
+                if (!request.getParameter("studentAddress").equals("")) {
+                    studentFilter.setStudentAddress(request.getParameter("studentAddress"));
+                }
 //                LocalDate startDate = LocalDate.parse(String.valueOf(request.getParameter("startDate")));
 //                LocalDate endDate = LocalDate.parse(String.valueOf(request.getParameter("endDate")));
-                if (request.getParameter("discipline") != null){
-                searchStudent.setDisciplineId(Long.parseLong(request.getParameter("discipline")));}
-                searchStudent.setDisciplineTitle(request.getParameter("disciplineTitle"));
-                if (request.getParameter("group") != null){
-                searchStudent.setGroupId(Long.parseLong(request.getParameter("group")));}
-                searchStudent.setGender(request.getParameter("gender"));
+                if (!request.getParameter("discipline").equals("")) {
+                    studentFilter.setDisciplineId(request.getParameter("discipline"));
+                }
+                if (!request.getParameter("disciplineTitle").equals("")) {
+                    studentFilter.setDisciplineTitle(request.getParameter("disciplineTitle"));
+                }
+                if (!request.getParameter("group").equals("")) {
+                    studentFilter.setGroupId(request.getParameter("group"));
+                }
+                if (!request.getParameter("gender").equals("")) {
+                    studentFilter.setGender(request.getParameter("gender"));
+                }
 
-                studentService.searchStudents(searchStudent);
-
+                Set<Student> students = studentService.searchStudents(studentFilter);
+                request.setAttribute("students", students);
+                Set<Group>groups = studentService.getAllGroups();
+                request.setAttribute("groups", groups);
+                Set<Discipline> disciplines = studentService.getAllDisciplines();
+                request.setAttribute("disciplines", disciplines);
+                RequestDispatcher requestDispatcher = getServletContext().getRequestDispatcher("/WEB-INF/views/list.jsp");
+                requestDispatcher.forward(request, response);
+                break;
+            case "RESET":
+                response.sendRedirect("/student?action=LIST");
                 break;
         }
     }
@@ -110,15 +128,13 @@ public class StudentServlet extends HttpServlet {
 
         InputStream inputStream = null;
         Part filePart = request.getPart("image");
-        if (filePart != null){
+        if (filePart != null) {
             inputStream = filePart.getInputStream();
             BufferedImage bufferedImage = ImageIO.read(inputStream);
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             ImageIO.write(bufferedImage, "jpg", byteArrayOutputStream);
             student.setPicture(byteArrayOutputStream.toByteArray());
-//            student.setPicture(new ByteArrayInputStream(inputStream));
         }
-
 
         group.setId(Long.parseLong(request.getParameter("group")));
         student.setGroup(group);
@@ -157,6 +173,7 @@ public class StudentServlet extends HttpServlet {
             action = "LIST";
         }
         RequestDispatcher requestDispatcher;
+        Set<StudentFilter> studentFilters;
         Set<Student> students;
         Set<Group> groups;
         Set<PhoneType> phoneTypes;
@@ -171,12 +188,8 @@ public class StudentServlet extends HttpServlet {
                 req.setAttribute("groups", groups);
                 students = studentService.getAllStudents();
                 req.setAttribute("students", students);
-                phoneTypes = studentService.getAllPhoneTypes();
-                req.setAttribute("phoneTypes", phoneTypes);
                 disciplines = studentService.getAllDisciplines();
                 req.setAttribute("disciplines", disciplines);
-                libraryAbonaments = studentService.getAllAbonaments();
-                req.setAttribute("libraryAbonaments", libraryAbonaments);
                 requestDispatcher = getServletContext().getRequestDispatcher("/WEB-INF/views/list.jsp");
                 requestDispatcher.forward(req, resp);
                 break;
@@ -199,10 +212,10 @@ public class StudentServlet extends HttpServlet {
                 studentId = Long.parseLong(req.getParameter("studentId"));
                 student = studentService.getStudentById(studentId);
                 req.setAttribute("student", student);
-                disciplines = studentService.getDisciplineById(studentId);
-                req.setAttribute("disciplines", disciplines);
-                Set<Teacher> teachers = studentService.getAllTeacher();
-                req.setAttribute("teachers", teachers);
+//                disciplines = studentService.getDisciplineById(studentId);
+//                req.setAttribute("disciplines", disciplines);
+//                Set<Teacher> teachers = studentService.getAllTeacher();
+//                req.setAttribute("teachers", teachers);
                 requestDispatcher = getServletContext().getRequestDispatcher("/WEB-INF/views/mark.jsp");
                 requestDispatcher.forward(req, resp);
                 break;

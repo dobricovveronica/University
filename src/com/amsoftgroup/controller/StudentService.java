@@ -5,7 +5,6 @@ import com.amsoftgroup.model.*;
 import com.amsoftgroup.utilitys.DataBaseConnection;
 
 import java.sql.Connection;
-import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,7 +20,7 @@ public class StudentService {
     private MarkDao markDao;
     private AddressDao addressDao;
     private PhoneDao phoneDao;
-    private SearchStudentDao searchStudentDao;
+    private StudentFilterDao studentFilterDao;
 
 
     public StudentService() {
@@ -36,7 +35,7 @@ public class StudentService {
         this.markDao = new MarkDao(connection);
         this.addressDao = new AddressDao(connection);
         this.phoneDao = new PhoneDao(connection);
-        this.searchStudentDao = new SearchStudentDao(connection);
+        this.studentFilterDao = new StudentFilterDao(connection);
 
     }
 
@@ -125,11 +124,9 @@ public class StudentService {
         libraryAbonamentDao.updateLibraryAbonament(libraryAbonament);
     }
 
-    public void searchStudents(SearchStudent searchStudent) {
-        searchStudentDao.searchStudents(searchStudent);
+    public Set<Student> searchStudents(StudentFilter studentFilter) {
+        return studentFilterDao.searchStudents(studentFilter);
     }
-
-    ;
 
     public void deleteStudent(String[] list) {
         Long id;

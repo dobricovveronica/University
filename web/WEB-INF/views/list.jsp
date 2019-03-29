@@ -3,6 +3,7 @@
 <%@ page import="com.amsoftgroup.model.Phone" %>
 <%@ page import="com.amsoftgroup.model.Student" %>
 <%@ page import="java.util.Set" %>
+<%@ page import="java.util.Base64" %>
 
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
@@ -33,7 +34,7 @@
             }
         }
 
-        // document.getElementById('delete').onclick = function() {
+        // <label class="col-sm-2 col-form-label">Gender:</label>Id('delete').onclick = function() {
         //     document.forms.my.reset(); // сбрасываем форму
         //     location.reload(); // перезагружаем страницу
         // }
@@ -123,7 +124,7 @@
         </div>
         <div class="col-3"></div>
         <div class="col-1">
-            <input type="hidden" name="action" value="SEARCH">
+            <input type="hidden" name="action" value="SEARCH" disabled>
             <button type="submit" class="btn btn-secondary btm-sm" name="search">Search</button>
         </div>
         <div class="col">
@@ -161,8 +162,14 @@
             </td>
             <td><input type="checkbox" name="check[]" id="myCheck" value="<%=student.getId()%>"
                        onclick="idChecked(value)"></td>
-            <td>Image
-            <img src="<%=student.getPicture()%>" width="50" height="50" alt="image">
+            <%
+                byte[] img = student.getPicture();
+                String imageBase64 = "";
+                if (img != null) {
+                    imageBase64 = new String(Base64.getEncoder().encode(img));
+                }
+            %>
+            <td><img src="data:image/jpeg;base64, <%=imageBase64%>" width="50" height="50" alt="image">
             </td>
             <td><%=student.getFirstName() + " " + student.getLastName()%>
             </td>
@@ -179,7 +186,7 @@
                 <%}%>
             </td>
             <td><a href="#" style="color: #221fff;"
-                   onclick="window.open('/student?action=LIBRARY_ABONAMENT&studentId='+ <%=student.getId()%>,'MyWindow', 200, 200);
+                   onclick="window.open('/student?action=LIBRARY_ABONAMENT&studentId='+ <%=student.getId()%>,'MyWindow', 'width=900, height=400');
                            return false;"><%="Status: " + student.getLibraryAbonament().getStatus()%>
             </a><br>
                 <p <%=(!student.getLibraryAbonament().getStatus().equals("Active")) ? "hidden" : ""%>>
@@ -197,11 +204,11 @@
             </td>
             <td>
                 <button type="submit" class="btn btn-success" name="edit"
-                        onclick="window.open('/student?action=EDIT&studentId='+ <%=student.getId()%>,'MyWindow' ,400,400);">
+                        onclick="window.open('/student?action=EDIT&studentId='+ <%=student.getId()%>,'MyWindow' ,'width=1200, height=700');">
                     Edit
                 </button>
                 <button type="submit" class="btn btn-primary" name="mark"
-                        onclick="window.open('/student?action=MARK&studentId='+ <%=student.getId()%>,'MyWindow' ,400,400);">
+                        onclick="window.open('/student?action=MARK&studentId='+ <%=student.getId()%>,'MyWindow' ,'width=900, height=400');">
                     Add Mark
                 </button>
             </td>

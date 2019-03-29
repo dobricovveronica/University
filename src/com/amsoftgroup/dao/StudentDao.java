@@ -80,7 +80,7 @@ public class StudentDao {
                 "P.last_name, " +
                 "P.date_of_birth, " +
                 "P.gender, " +
-                "P.mail, " +
+                "P.mail, P.picture, " +
                 "A.id as aid, " +
                 "A.country, A.city, " +
                 "A.address, " +
@@ -151,7 +151,7 @@ public class StudentDao {
                 "P.last_name, " +
                 "P.date_of_birth, " +
                 "P.gender, " +
-                "P.mail, " +
+                "P.mail, P.picture, " +
                 "A.id as aid, " +
                 "A.country, A.city, " +
                 "A.address, " +
@@ -179,6 +179,8 @@ public class StudentDao {
                 student.setDateOfBirth(LocalDate.parse(String.valueOf(rs.getDate("date_of_birth"))));
                 student.setGender(rs.getString("gender").charAt(0));
                 student.setMail(rs.getString("mail"));
+                if (rs.getBytes("picture") != null){
+                    student.setPicture(rs.getBytes("picture"));}
 
                 Address address = new Address();
                 address.setId(Long.parseLong(rs.getString("aid")));

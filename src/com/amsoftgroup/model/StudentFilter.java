@@ -1,11 +1,11 @@
 package com.amsoftgroup.model;
 
-public class SearchStudent {
+public class StudentFilter {
     private String name;
     private String studentAddress;
-    private Long  disciplineId;
+    private String  disciplineId;
     private String disciplineTitle;
-    private Long groupId;
+    private String groupId;
     private String gender;
 
     public String getName() {
@@ -24,11 +24,11 @@ public class SearchStudent {
         this.studentAddress = studentAddress;
     }
 
-    public Long getDisciplineId() {
+    public String getDisciplineId() {
         return disciplineId;
     }
 
-    public void setDisciplineId(Long disciplineId) {
+    public void setDisciplineId(String disciplineId) {
         this.disciplineId = disciplineId;
     }
 
@@ -40,11 +40,11 @@ public class SearchStudent {
         this.disciplineTitle = disciplineTitle;
     }
 
-    public Long getGroupId() {
+    public String getGroupId() {
         return groupId;
     }
 
-    public void setGroupId(Long groupId) {
+    public void setGroupId(String groupId) {
         this.groupId = groupId;
     }
 
