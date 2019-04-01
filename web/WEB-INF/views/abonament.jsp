@@ -37,16 +37,16 @@
     <%java.text.DateFormat df = new java.text.SimpleDateFormat("MM/dd/yyyy"); %>
     <input type="hidden" name="abonamentId" value="<%=student.getLibraryAbonament().getId()%>">
     <div class="form-group row">
-        <div class="col-1">
+        <div class="col-2">
             <label class="col-sm-2 col-form-label">Status:</label>
         </div>
         <div class="col-3">
             <select name="status" class="form-control" onchange="inactive()">
-                <option selected><%=student.getLibraryAbonament().getStatus()%></option>
+<%--                <option selected><%=student.getLibraryAbonament().getStatus()%></option>--%>
                 <% Set<LibraryAbonament> libraryAbonaments = (Set<LibraryAbonament>) request.getAttribute("libraryAbonaments");
                     for (LibraryAbonament libraryAbonament : libraryAbonaments) {
                 %>
-                <option value="<%=libraryAbonament.getStatus()%>"><%=libraryAbonament.getStatus()%>
+                <option <%=(student.getLibraryAbonament().getId() == libraryAbonament.getId()) ? "selected" : ""%> value="<%=libraryAbonament.getStatus()%>"><%=libraryAbonament.getStatus()%>
                 </option>
                 <%}%>
             </select>
@@ -54,7 +54,7 @@
         </div>
     </div>
     <div class="form-group row">
-        <div class="col-1">
+        <div class="col-2">
             <label class="col-sm-2 col-form-label">StartDate:</label>
         </div>
         <div class="col-3">
@@ -62,7 +62,7 @@
         </div>
     </div>
     <div class="form-group row">
-        <div class="col-1">
+        <div class="col-2">
             <label class="col-sm-2 col-form-label">EndDate:</label>
         </div>
         <div class="col-3">

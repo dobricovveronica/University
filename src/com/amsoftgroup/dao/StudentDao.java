@@ -92,7 +92,7 @@ public class StudentDao {
                 "inner join university.persons as P on P.id = S.id " +
                 "left join university.addresses as A on P.address_id = A.id " +
                 "left join university.library_abonaments as LA on P.library_abonament_id = LA.id " +
-                "left join university.groups as G on G.id = S.group_id order by P.id";
+                "left join university.groups as G on G.id = S.group_id order by P.id ";
         Set<Student> students = new HashSet<>();
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
@@ -112,7 +112,7 @@ public class StudentDao {
         return students;
     }
 
-    public Student getStudentById(Long id) {
+    public Student getStudentById(Long studentId) {
         String sql = "select P.id, " +
                 "P.first_name, " +
                 "P.last_name, " +
@@ -130,15 +130,15 @@ public class StudentDao {
                 "inner join university.persons as P on P.id = S.id " +
                 "left join university.addresses as A on P.address_id = A.id " +
                 "left join university.library_abonaments as LA on P.library_abonament_id = LA.id " +
-                "left join university.groups as G on G.id = S.group_id order by P.id " +
+                "left join university.groups as G on G.id = S.group_id " +
                 "where S.id = ?";
         Student student = new Student();
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
 
             System.out.println(statement.toString());
-            statement.setLong(1, id);
-            student.setId(id);
+            statement.setLong(1, studentId);
+            student.setId(studentId);
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
                 student = builStudent(rs, student);
@@ -184,6 +184,8 @@ public class StudentDao {
         group.setId(Long.parseLong(rs.getString("gid")));
         group.setName(rs.getString("gname"));
         student.setGroup(group);
+
+
 
         student.setDisciplines(new DisciplineDao(connection).getDisciplineById(student.getId()));
         return student;

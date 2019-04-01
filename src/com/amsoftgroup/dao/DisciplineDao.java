@@ -2,6 +2,7 @@ package com.amsoftgroup.dao;
 
 import com.amsoftgroup.model.Discipline;
 import com.amsoftgroup.model.Student;
+import com.amsoftgroup.model.Teacher;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -30,7 +31,7 @@ public class DisciplineDao {
                 Discipline discipline = new Discipline();
                 discipline.setId(Long.parseLong(rs.getString("id")));
                 discipline.setTitle(rs.getString("title"));
-                discipline.getTeachers().setId(Long.parseLong(rs.getString("teacher_id")));
+                discipline.getTeacher().setId(Long.parseLong(rs.getString("teacher_id")));
                 disciplines.add(discipline);
                 System.out.println(rs.getLong("id") + " " + rs.getString("title") + " " + rs.getLong("teacher_id"));
             }
@@ -59,7 +60,7 @@ public class DisciplineDao {
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, discipline.getTitle());
-            statement.setLong(2, discipline.getTeachers().getId());
+            statement.setLong(2, discipline.getTeacher().getId());
             statement.setLong(3, discipline.getId());
             System.out.println(statement.toString());
             statement.execute();
@@ -74,7 +75,7 @@ public class DisciplineDao {
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, discipline.getTitle());
-            statement.setLong(2, discipline.getTeachers().getId());
+            statement.setLong(2, discipline.getTeacher().getId());
             System.out.println(statement.toString());
             statement.execute();
 
@@ -106,13 +107,14 @@ public class DisciplineDao {
 
     public Set<Discipline> getDisciplineById(Long studentId) {
         String sql = "select P.id, " +
-                "D.id as did, D.title, " +
-                "M.id, M.value " +
+                "D.id as did, D.title, T.id as tid, " +
+                "M.id, M.value  " +
                 "from university.persons as P " +
-                "inner join university.students as S on S.id = P.id " +
+                "left join university.students as S on S.id = P.id " +
                 "left join university.disciplines_to_students as DS on S.id = DS.student_id " +
                 "left join university.disciplines as D on DS.discipline_id = D.id " +
                 "left join university.marks as M on D.id = M.discipline_id " +
+                "left join university.teachers as T on T.id = D.teacher_id " +
                 "where P.id = ? ";
         Set<Discipline> disciplines = new HashSet<>();
 
@@ -124,6 +126,11 @@ public class DisciplineDao {
                 Discipline discipline = new Discipline();
                 discipline.setId(Long.parseLong(rs.getString("did")));
                 discipline.setTitle(rs.getString("title"));
+
+                Teacher teacher = new Teacher();
+                teacher.setId(Long.parseLong(rs.getString("tid")));
+
+                discipline.setTeacher(teacher);
                 disciplines.add(discipline);
             }
         } catch (SQLException e) {

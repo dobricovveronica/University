@@ -78,8 +78,12 @@ public class StudentServlet extends HttpServlet {
                 if (!request.getParameter("studentAddress").equals("")) {
                     studentFilter.setStudentAddress(request.getParameter("studentAddress"));
                 }
-//                LocalDate startDate = LocalDate.parse(String.valueOf(request.getParameter("startDate")));
-//                LocalDate endDate = LocalDate.parse(String.valueOf(request.getParameter("endDate")));
+                if (!request.getParameter("startDate").equals("")) {
+                    studentFilter.setStartDate(String.valueOf(request.getParameter("startDate")));
+                }
+                if (!request.getParameter("endDate").equals("")) {
+                    studentFilter.setEndDate(String.valueOf(request.getParameter("endDate")));
+                }
                 if (!request.getParameter("discipline").equals("")) {
                     studentFilter.setDisciplineId(request.getParameter("discipline"));
                 }
@@ -95,7 +99,7 @@ public class StudentServlet extends HttpServlet {
 
                 Set<Student> students = studentService.searchStudents(studentFilter);
                 request.setAttribute("students", students);
-                Set<Group>groups = studentService.getAllGroups();
+                Set<Group> groups = studentService.getAllGroups();
                 request.setAttribute("groups", groups);
                 Set<Discipline> disciplines = studentService.getAllDisciplines();
                 request.setAttribute("disciplines", disciplines);
@@ -141,7 +145,7 @@ public class StudentServlet extends HttpServlet {
 
         libraryAbonament.setStatus("None");
         student.setLibraryAbonament(libraryAbonament);
-//
+
         Set<Phone> phones = new HashSet<>();
         Phone phone = new Phone();
         PhoneType phoneType = new PhoneType();
@@ -214,8 +218,8 @@ public class StudentServlet extends HttpServlet {
                 req.setAttribute("student", student);
 //                disciplines = studentService.getDisciplineById(studentId);
 //                req.setAttribute("disciplines", disciplines);
-//                Set<Teacher> teachers = studentService.getAllTeacher();
-//                req.setAttribute("teachers", teachers);
+                Set<Teacher> teachers = studentService.getAllTeacher();
+                req.setAttribute("teachers", teachers);
                 requestDispatcher = getServletContext().getRequestDispatcher("/WEB-INF/views/mark.jsp");
                 requestDispatcher.forward(req, resp);
                 break;

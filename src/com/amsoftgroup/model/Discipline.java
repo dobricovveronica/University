@@ -8,7 +8,7 @@ public class Discipline {
 
     private String title;
 
-    private Teacher teachers;
+    private Teacher teacher;
 
     private HashSet<Mark> marks;
 
@@ -30,12 +30,12 @@ public class Discipline {
         this.title = title;
     }
 
-    public Teacher getTeachers() {
-        return teachers;
+    public Teacher getTeacher() {
+        return teacher;
     }
 
-    public void setTeachers(Teacher teachers) {
-        this.teachers = teachers;
+    public void setTeacher(Teacher teacher) {
+        this.teacher = teacher;
     }
 
     public HashSet<Mark> getMarks() {

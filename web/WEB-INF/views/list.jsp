@@ -38,11 +38,11 @@
             document.getElementById('reset').disabed = true;
             document.getElementById('delete').disabed = true;
             // document.getElementById('delete').setAttribute("disabled", true);
-            if (name == "search"){
+            if (name == 'search'){
                 document.getElementById('search').disabed = false;
-            }if (name == "reset"){
+            }if (name == 'reset'){
                 document.getElementById('reset').disabed = false;
-            }if (name == "delete"){
+            }if (name == 'delete'){
                 document.getElementById('delete').disabed = false;
             }
         }
@@ -136,11 +136,11 @@
         </div>
         <div class="col-3"></div>
         <div class="col-1">
-            <input type="hidden" id="search" name="action" value="SEARCH" disabled="">
+            <input type="hidden" id="search" name="action" value="SEARCH" >
             <button type="submit" class="btn btn-secondary btm-sm" name="search" onclick="activateInput(name)">Search</button>
         </div>
         <div class="col">
-            <input type="hidden" id="reset" name="action" value="RESET" disabled="">
+            <input type="hidden" id="reset" name="action" value="RESET" >
             <button type="reset" class="btn btn-secondary btm-sm" name="reset" onclick="activateInput(name)">Reset</button>
         </div>
     </div>
@@ -235,7 +235,7 @@
     <button type="submit" class="btn btn-secondary btm-sm" name="add_student"
             onclick="window.open('/student?action=EDIT&studentId=0','MyWindow' ,400,400);">Add New
     </button>
-        <input type="hidden" name="action" id="delete" value="DELETE" disabled="">
+        <input type="hidden" name="action" id="delete" value="DELETE" disabled>
     <button type="submit" class="btn btn-secondary btm-sm" onchange="activateInput(name)">Delete
     </button>
 </form>

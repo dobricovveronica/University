@@ -6,8 +6,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
+
+import static java.lang.String.valueOf;
+import static java.util.Date.*;
 
 public class StudentFilterDao {
     private Connection connection;
@@ -20,7 +22,7 @@ public class StudentFilterDao {
     }
 
     public Set<Student> searchStudents(StudentFilter studentFilter) {
-        String sql = "select P.id as pid, " +
+        String sql = "select distinct P.id as pid, " +
                 "P.first_name, " +
                 "P.last_name, " +
                 "P.date_of_birth, " +
@@ -35,31 +37,26 @@ public class StudentFilterDao {
                 "LA.start_date, " +
                 "LA.end_date, " +
                 "G.id   as gid, " +
-                "G.name as gname, " +
-                "D.id, " +
-                "D.title, " +
-                "DtoS.student_id, " +
-                "DtoS.discipline_id " +
-                "from university.students as S " +
+                "G.name as gname " +
+                "from  university.disciplines as D, university.disciplines_to_students as DtoS, university.students as S " +
                 "inner join university.persons as P on P.id = S.id " +
                 "left join university.addresses as A on P.address_id = A.id " +
                 "left join university.library_abonaments as LA on P.library_abonament_id = LA.id " +
-                "left join university.groups as G on G.id = S.group_id " +
-                "left join university.disciplines_to_students as DtoS on S.id = DtoS.student_id " +
-                "left join university.disciplines as D on D.id = DtoS.discipline_id ";
-        //                "and (P.date_of_birth = ? or P.date_of_birth between ? and ?) " +
+                "left join university.groups as G on G.id = S.group_id ";
 
         Set<Student> students = new HashSet<>();
-        Student student = new Student();
+
         sql += queryBuilder(studentFilter);
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
             System.out.println(statement.toString());
             ResultSet rs = statement.executeQuery();
+
             while (rs.next()) {
+                Student student = new Student();
                 student.setId(Long.parseLong(rs.getString("pid")));
-                student = studentDao.builStudent(rs, student);
-                students.add(student);
+//                student = studentDao.builStudent(rs, student);
+                students.add(studentDao.builStudent(rs, student));
             }
 
         } catch (SQLException e) {
@@ -84,9 +81,6 @@ public class StudentFilterDao {
                 builder.append(count > 0 ? prefix + s2 : s2);
                 count++;
             }
-//            statement.setDate(3, Date.valueOf(start_date));
-//            statement.setDate(4, Date.valueOf(start_date));
-//            statement.setDate(5,  Date.valueOf(end_date));
             if (studentFilter.getGroupId() != null) {
                 String s3 = " G.id = '" + studentFilter.getGroupId() + "'";
                 builder.append(count > 0 ? prefix + s3 : s3);
@@ -98,13 +92,21 @@ public class StudentFilterDao {
                 count++;
             }
             if (studentFilter.getDisciplineId() != null) {
-                String s5 = " D.id = '" + studentFilter.getDisciplineId() + "'";
+                String s5 = " P.id = DtoS.student_id and DtoS.discipline_id = '" +  studentFilter.getDisciplineId() + "'";
                 builder.append(count > 0 ? prefix + s5 : s5);
                 count++;
             }
             if (studentFilter.getDisciplineTitle() != null) {
-                String s6 = " D.title LIKE '" + studentFilter.getDisciplineTitle() + "%'";
+                String s6 = "(P.id = DtoS.student_id and DtoS.discipline_id = D.id and D.title LIKE '" + studentFilter.getDisciplineTitle() + "%')";
                 builder.append(count > 0 ? prefix + s6 : s6);
+                count++;
+            }
+            if ((studentFilter.getStartDate()!= null) && (studentFilter.getEndDate()!= null)){
+                String s8 = "P.date_of_birth between '" + studentFilter.getStartDate() + "' and '" + studentFilter.getEndDate() + "'";
+                builder.append(count > 0 ? prefix + s8 : s8);
+                count++;} else{
+                String s7 = "P.date_of_birth = '" + studentFilter.getStartDate() + "'";
+                builder.append(count > 0 ? prefix + s7 : s7);
                 count++;
             }
         }

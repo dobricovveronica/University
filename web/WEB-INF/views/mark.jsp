@@ -2,6 +2,7 @@
 <%@ page import="java.util.Set" %>
 <%@ page import="com.amsoftgroup.model.Teacher" %>
 <%@ page import="com.amsoftgroup.model.Student" %>
+<%@ page import="com.amsoftgroup.dao.TeacherDao" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -9,12 +10,7 @@
     <style>
         <%@include file="/WEB-INF/views/css/bootstrap.min.css" %>
     </style>
-    <script>
-        function teacherSelect() {
 
-
-        }
-    </script>
 </head>
 <body>
 <%Student student = (Student) request.getAttribute("student"); %>
@@ -23,38 +19,46 @@
 <form method="post">
     <div class="form-group row">
         <input type="hidden" name="studentId" value="<%=student.getId()%>">
-        <div class="col-1">
+        <div class="col-2">
             <label class="col-sm-2 col-form-label">Discipline:</label>
         </div>
         <div class="col-3">
-            <select name="discipline" class="form-control">
-                <option selected>All</option>
-                <% Set<Discipline> disciplines = (Set<Discipline>) request.getAttribute("disciplines");
+            <select name="discipline" class="form-control" onchange="teacherSelect(this.name)">
+                <option selected>Select discipline</option>
+                <% Set<Discipline> disciplines = (Set<Discipline>) student.getDisciplines();
                     for (Discipline discipline : disciplines) {
                 %>
-                <script>console.log("<%=discipline.getId()%>")</script>
-                <option value="<%=discipline.getId()%>" onchange="teacherSelect()"><%=discipline.getTitle()%></option>
+
+                <option value="<%=discipline.getId()%>"><%=discipline.getTitle()%>
+                </option>
                 <%}%>
             </select>
         </div>
     </div>
     <div class="form-group row">
-        <div class="col-1">
+        <div class="col-2">
             <label class="col-sm-2 col-form-label">Profesor:</label>
         </div>
         <div class="col-3">
             <select name="teacher" class="form-control">
-                <option selected>All</option>
-                <% Set<Teacher> teachers = (Set<Teacher>) request.getAttribute("teachers");
-                    for (Teacher teacher : teachers) {
-                %>
-                <option value="<%=teacher.getId()%>"><%=teacher.getFirstName()%></option>
-                <%}%>
+                <script>
+                    function teacherSelect(disciplineName) {
+                        var dis = document.getElementsByName(disciplineName);
+                        var teach = document.getElementsByName('teacher');
+                        <% for (Discipline discipline : student.getDisciplines()){%>
+                        if (dis.value == <%=discipline.getId()%>) {
+                            teach.options[0] = new Option(<%=discipline.getTeacher().getFirstName()%> +" " + <%=discipline.getTeacher().getLastName()%>, <%=discipline.getTeacher().getId()%>);
+                            console.log(<%=discipline.getTeacher().getId()%>);
+                        }
+                    }
+                    <%}%>
+                    }
+                </script>
             </select>
         </div>
     </div>
     <div class="form-group row">
-        <div class="col-1">
+        <div class="col-2">
             <label class="col-sm-2 col-form-label">Mark:</label>
         </div>
         <div class="col-3">
