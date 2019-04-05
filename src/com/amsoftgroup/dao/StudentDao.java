@@ -177,15 +177,12 @@ public class StudentDao {
         }
         student.setLibraryAbonament(libraryAbonament);
 
-
         student.setPhones(new PhoneDao(connection).getPhonesById(student.getId()));
 
         Group group = new Group();
         group.setId(Long.parseLong(rs.getString("gid")));
         group.setName(rs.getString("gname"));
         student.setGroup(group);
-
-
 
         student.setDisciplines(new DisciplineDao(connection).getDisciplineById(student.getId()));
         return student;

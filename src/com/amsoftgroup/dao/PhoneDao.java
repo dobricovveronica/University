@@ -90,7 +90,7 @@ public class PhoneDao {
     }
 
     public Set<Phone> getPhonesById(Long studentId) {
-        String sql = "select P.id, PH.id, PH.value as phvalue, PT.id as ptid, PT.name as ptname " +
+        String sql = "select P.id, PH.id as phid, PH.value as phvalue, PT.id as ptid, PT.name as ptname " +
                 "from university.persons as P " +
                 "       left join university.persons_to_phones as PP on P.id = PP.person_id " +
                 "       left join university.phones as PH on PP.phone_id = PH.id " +
@@ -107,6 +107,7 @@ public class PhoneDao {
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
                 Phone phone = new Phone();
+                phone.setId(Long.parseLong(rs.getString("phid")));
                 phone.setValue(rs.getString("phvalue"));
                 PhoneType phoneType = new PhoneType();
                 phoneType.setId(Long.parseLong(rs.getString("ptid")));

@@ -2,7 +2,8 @@
 <%@ page import="static java.util.Objects.isNull" %>
 <%@ page import="java.util.Base64" %>
 <%@ page import="com.amsoftgroup.model.*" %>
-<%@ page import="java.util.HashSet" %><%--
+<%@ page import="java.util.HashSet" %>
+<%@ page import="java.util.ArrayList" %><%--
   Created by IntelliJ IDEA.
   User: vdobricov
   Date: 3/14/2019
@@ -13,6 +14,7 @@
 <html>
 <head>
     <title>Add / Edit Student</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <style>
         <%@include file="/WEB-INF/views/css/bootstrap.min.css" %>
         <%@include file="/WEB-INF/views/css/style.css" %>
@@ -31,6 +33,15 @@
                 reader.readAsDataURL(file);
             }
         }
+
+        function duplicate(onePhone) {
+            var c = $(onePhone).parent(this).parent(this).clone().appendTo(".allphones");
+            c.find('input[type="text"]').val('');
+            c.find('input[type="hidden"]').val('');
+        }
+        function deleteBlock(onePhone) {
+            var c = $(onePhone).parent(this).parent(this).remove();
+        }
     </script>
 </head>
 <body>
@@ -41,7 +52,7 @@
         if (!isNull(studentId) && studentId != 0) {
             student = (Student) request.getAttribute("student");
         }
-
+        Set<PhoneType> phoneTypes = (Set<PhoneType>) request.getAttribute("phoneTypes");
     %>
     <div class="form-group row">
         <div class="col-1">
@@ -163,43 +174,53 @@
         </div>
         <br>
     </div>
-    <div class="form-row">
-        <div class="col-1">
-            <label class="col-sm-2 col-form-label">Phone(s):</label>
+    <div class="allphones">
+        <div class="form-row" name="phone">
+            <div class="col-1">
+                <label class="col-sm-2 col-form-label">Phone(s):</label>
+            </div>
+            <% Set<Phone> phones = new HashSet<>();
+                if (studentId != 0) {
+                    phones = (Set<Phone>) student.getPhones();
+                }
+                ArrayList<Long> phoneTypeId = new ArrayList<>();
+                ArrayList<Long> phoneId = new ArrayList<>();
+                ArrayList<String> phoneValue = new ArrayList<>();
+                int count = 0;
+                for (Phone phone : phones) {
+                    phoneTypeId.add(phone.getPhoneType().getId());
+                    phoneId.add(phone.getId());
+                    phoneValue.add(phone.getValue());
+                }
+            do {%>
+            <div class="col-1.5">
+                <select class="form-control" name="phoneType[]">
+                    <option <%=(studentId == 0) ? "hidden" : ""%> selected>Select phone type</option>
+                    <% for (PhoneType phoneType : phoneTypes) {%>
+                    <option <%=(studentId != 0) ? ((phoneTypeId.get(count) == phoneType.getId()) ? "selected" : "") : ""%>
+                            value="<%=phoneType.getId()%>"><%=phoneType.getName()%>
+                    </option>
+                    </option>
+                    <%}%>
+                </select>
+            </div>
+            <div class="col-1.5">
+                <input type="hidden" class="form-control" name="phoneId[]" value="<%=(studentId!=0)?phoneId.get(count):""%>">
+                <input type="text" class="form-control" placeholder="Phone number" name="phoneNumber[]" value="<%=(studentId!=0)?phoneValue.get(count):""%>">
+            </div>
+            <div class="col-1.5" name="buttons">
+                <button type="button" class="btn btn-success" onclick="duplicate(this)">Add</button>
+                <button type="button" class="btn btn-danger" onclick="deleteBlock(this)">Delete</button>
+            </div>
         </div>
-        <% Set<Phone> phones = new HashSet<>();
-            if (studentId != 0) {
-            phones = (Set<Phone>) student.getPhones();
-        }
-            for (Phone phone : phones) {%>
-        <div class="col-1">
-            <select class="form-control" name="phone_type">
-                <option <%=(studentId == 0) ? "hidden" : ""%> selected value="">Select phone type</option>
-                <% Set<PhoneType> phoneTypes = (Set<PhoneType>) request.getAttribute("phoneTypes");
-                    for (PhoneType phoneType : phoneTypes) {
-                %>
-                <option <%=(studentId != 0) ? ((phone.getPhoneType().getId() == phoneType.getId()) ? "selected" : "") : ""%>
-                        value="<%=phoneType.getId()%>"><%=phoneType.getName()%>
-                </option>
-                <%}%>
-            </select>
+        <div class="form-row">
+            <div class="col-1">
+            </div>
+            <%count++;}
+                while (count < phoneId.size());%>
         </div>
-        <div class="col-2">
-            <input type="text" class="form-control" placeholder="Phone number" name="phone"
-                   value="<%=(studentId!=0)?phone.getValue():""%>">
-        </div>
-        <div class="col-1.5">
-            <button type="button" class="btn btn-success">Add</button>
-            <button type="button" class="btn btn-danger">Delete</button>
-        </div>
-    </div>
-    <div class="form-row">
-        <div class="col-1">
-        </div>
-        <%}%>
     </div>
     <br>
-
     <div class="form-row">
         <div class="col-6"></div>
         <div class="col-2">

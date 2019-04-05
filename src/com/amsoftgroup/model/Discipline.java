@@ -12,7 +12,7 @@ public class Discipline {
 
     private HashSet<Mark> marks;
 
-    private HashSet<Average> averages;
+    private Average average;
 
     public long getId() {
         return id;
@@ -46,11 +46,11 @@ public class Discipline {
         this.marks = marks;
     }
 
-    public HashSet<Average> getAverages() {
-        return averages;
+    public Average getAverage() {
+        return average;
     }
 
-    public void setAverages(HashSet<Average> averages) {
-        this.averages = averages;
+    public void setAverage(Average average) {
+        this.average = average;
     }
 }

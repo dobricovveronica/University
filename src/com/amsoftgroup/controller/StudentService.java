@@ -5,8 +5,7 @@ import com.amsoftgroup.model.*;
 import com.amsoftgroup.utilitys.DataBaseConnection;
 
 import java.sql.Connection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class StudentService {
     private static StudentService studentService;
@@ -70,8 +69,6 @@ public class StudentService {
         return teacherDao.getAllTeacher();
     }
 
-    public Set<Teacher> getTeacherByDisciplineId(Discipline discipline){ return teacherDao.getTeacherByDisciplineId(discipline);}
-
     public Set<LibraryAbonament> getAllAbonaments() {
         return libraryAbonamentDao.getAllAbonaments();
     }
@@ -105,12 +102,30 @@ public class StudentService {
 
         addressDao.updateAddress(student.getAddresses());
         personDao.updatePerson(student);
-
+        Set<Phone> oldPhones = phoneDao.getPhonesById(student.getId());
         Set<Phone> phones = new HashSet<>();
+        List<Long> oldPhonesId = new ArrayList<>();
+        List<Long> newPhonesId = new ArrayList<>();
         for (Phone phone : student.getPhones()) {
-            phoneDao.updatePhone(phone);
-//            phoneDao.addPhoneToPerson(phone, student);
-            phones.add(phone);
+            for (Phone oldPhone : oldPhones) {
+                if (phone.getId() == 0) {
+                    phone.setId(phoneDao.insertPhone(phone));
+                    phoneDao.addPhoneToPerson(phone, student);
+                }
+                if (phone.getId() == oldPhone.getId()) {
+                    phoneDao.updatePhone(phone);
+                }
+                phones.add(phone);
+                oldPhonesId.add(oldPhone.getId());
+            }
+            newPhonesId.add(phone.getId());
+        }
+        List<Long> diff = new ArrayList<>(oldPhonesId);
+        diff.removeAll(newPhonesId);
+        for (Long ph : diff) {
+            Phone phon = new Phone();
+            phon.setId(ph);
+            phoneDao.deletePhone(phon);
         }
 
         studentDao.updateStudent(student);
@@ -134,10 +149,5 @@ public class StudentService {
             id = Long.parseLong(list[i]);
             studentDao.deleteStudent(id);
         }
-
     }
-//    public void deleteStudent(Long id) {
-//        studentDao.delete(id);
-//        }
-
 }

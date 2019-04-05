@@ -9,7 +9,7 @@ public class Student extends Person {
 
     private Set<Discipline> disciplines;
 
-    private HashSet<Average> averages;
+    private Average average;
 
     public Group getGroup() {
         return group;
@@ -27,11 +27,11 @@ public class Student extends Person {
         this.disciplines = disciplines;
     }
 
-    public HashSet<Average> getAverages() {
-        return averages;
+    public Average getAverage() {
+        return average;
     }
 
-    public void setAverages(HashSet<Average> averages) {
-        this.averages = averages;
+    public void setAverages(Average average) {
+        this.average = average;
     }
 }

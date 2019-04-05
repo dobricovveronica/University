@@ -10,6 +10,12 @@
     <style>
         <%@include file="/WEB-INF/views/css/bootstrap.min.css" %>
     </style>
+    <script>
+        function exit() {
+            window.opener.location.reload();
+            window.close()
+        }
+    </script>
 
 </head>
 <body>
@@ -23,9 +29,9 @@
             <label class="col-sm-2 col-form-label">Discipline:</label>
         </div>
         <div class="col-3">
-            <select name="discipline" class="form-control" onchange="teacherSelect(this.name)">
+            <select name="discipline" id="discipline" class="form-control" onchange="teacherSelect(this)">
                 <option selected>Select discipline</option>
-                <% Set<Discipline> disciplines = (Set<Discipline>) student.getDisciplines();
+                <% Set<Discipline> disciplines = (Set<Discipline>) request.getAttribute("disciplines");
                     for (Discipline discipline : disciplines) {
                 %>
 
@@ -40,17 +46,17 @@
             <label class="col-sm-2 col-form-label">Profesor:</label>
         </div>
         <div class="col-3">
-            <select name="teacher" class="form-control">
+            <select name="teacher" id="teacher" class="form-control">
                 <script>
-                    function teacherSelect(disciplineName) {
-                        var dis = document.getElementsByName(disciplineName);
-                        var teach = document.getElementsByName('teacher');
+                    function teacherSelect(discipline) {
+                        var dis = discipline.value;
+                        var teach = document.getElementById("teacher");
                         <% for (Discipline discipline : student.getDisciplines()){%>
-                        if (dis.value == <%=discipline.getId()%>) {
-                            teach.options[0] = new Option(<%=discipline.getTeacher().getFirstName()%> +" " + <%=discipline.getTeacher().getLastName()%>, <%=discipline.getTeacher().getId()%>);
-                            console.log(<%=discipline.getTeacher().getId()%>);
+                        if (dis == <%=discipline.getId()%>) {
+                            teach.options[0] = new Option("<%=discipline.getTeacher().getFirstName()%> "+" " + "<%=discipline.getTeacher().getLastName()%>", <%=discipline.getTeacher().getId()%>);
+                            console.log(<%=discipline.getTeacher().getLastName()%>);
                         }
-                    }
+
                     <%}%>
                     }
                 </script>
@@ -68,8 +74,8 @@
     <div class="form-row">
         <div class="col-2"></div>
         <div class="col-2">
-            <button type="submit" class="btn btn-secondary btm-sm">Save</button>
-            <button type="submit" class="btn btn-secondary btm-sm">Cancel</button>
+            <button type="submit" class="btn btn-secondary btm-sm" >Save</button>
+            <button type="submit" onclick="window.close()" class="btn btn-secondary btm-sm">Cancel</button>
         </div>
     </div>
 </form>

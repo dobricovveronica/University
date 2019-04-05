@@ -12,17 +12,29 @@
 <html>
 <head>
     <title>Library Abonament</title>
+
     <style>
         <%@include file="/WEB-INF/views/css/bootstrap.min.css" %>
     </style>
     <script>
+        var myVar;
+
         function exit() {
-           form.submit();
-           window.close();
+            // document.getElementById("form").submit();
+            // setTimeout("alert('Hello')", 1000);
+            console.log('exit');
+            document.forms['form'].submit();
+            setTimeout("myFunction", 3000);
         }
+
+        function myFunction() {
+            window.opener.location.reload();
+            window.close();
+        }
+
         function inactive() {
 
-            if (document.getElementsByName("status").values() == "None"){
+            if (document.getElementsByName("status").values() == "None") {
                 document.getElementsByName("start_date").disabled = true;
                 document.getElementsByName("end_date").disabled = true;
             }
@@ -31,9 +43,9 @@
 </head>
 <body>
 <%Student student = (Student) request.getAttribute("student"); %>
-<h1> <%=student.getFirstName()%> <%=student.getLastName()%> - student abonament</h1>
+<h1><%=student.getFirstName()%> <%=student.getLastName()%> - student abonament</h1>
 
-<form method="post" onsubmit="return exit()">
+<form method="post" name="form">
     <%java.text.DateFormat df = new java.text.SimpleDateFormat("MM/dd/yyyy"); %>
     <input type="hidden" name="abonamentId" value="<%=student.getLibraryAbonament().getId()%>">
     <div class="form-group row">
@@ -42,11 +54,11 @@
         </div>
         <div class="col-3">
             <select name="status" class="form-control" onchange="inactive()">
-<%--                <option selected><%=student.getLibraryAbonament().getStatus()%></option>--%>
                 <% Set<LibraryAbonament> libraryAbonaments = (Set<LibraryAbonament>) request.getAttribute("libraryAbonaments");
                     for (LibraryAbonament libraryAbonament : libraryAbonaments) {
                 %>
-                <option <%=(student.getLibraryAbonament().getId() == libraryAbonament.getId()) ? "selected" : ""%> value="<%=libraryAbonament.getStatus()%>"><%=libraryAbonament.getStatus()%>
+                <option <%=((student.getLibraryAbonament().getStatus().equals(libraryAbonament.getStatus())) ? "selected" : "") %>
+                        value="<%=libraryAbonament.getStatus()%>"><%=libraryAbonament.getStatus()%>
                 </option>
                 <%}%>
             </select>
@@ -58,7 +70,8 @@
             <label class="col-sm-2 col-form-label">StartDate:</label>
         </div>
         <div class="col-3">
-            <input type="date" class="form-control" name="start_date" value="<%=((student.getLibraryAbonament().getStartDate() != null)?student.getLibraryAbonament().getStartDate():"Select date")%>">
+            <input type="date" class="form-control" name="start_date"
+                   value="<%=((student.getLibraryAbonament().getStartDate() != null)?student.getLibraryAbonament().getStartDate():"Select date")%>">
         </div>
     </div>
     <div class="form-group row">
@@ -66,13 +79,14 @@
             <label class="col-sm-2 col-form-label">EndDate:</label>
         </div>
         <div class="col-3">
-            <input type="date" class="form-control" name="end_date" value="<%=((student.getLibraryAbonament().getEndDate() != null)?student.getLibraryAbonament().getEndDate():"Select date")%>">
+            <input type="date" class="form-control" name="end_date"
+                   value="<%=((student.getLibraryAbonament().getEndDate() != null)?student.getLibraryAbonament().getEndDate():"Select date")%>">
         </div>
     </div>
     <div class="form-row">
         <div class="col-2"></div>
         <div class="col-2">
-            <button type="submit"  class="btn btn-secondary btm-sm">Save</button>
+            <button type="submit" class="btn btn-secondary btm-sm" onclick="exit()">Save</button>
 
             <button type="button" onclick="window.close()" class="btn btn-secondary btm-sm">Cancel</button>
         </div>

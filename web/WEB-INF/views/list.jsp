@@ -16,46 +16,38 @@
         <%@include file="/WEB-INF/views/css/style.css" %>
     </style>
     <script>
-        function refresh() {
-            // document.forms["list"].submit();
 
-            form["list"].onsubmit = function () {
-                var oldCookie = document.cookie;
-
-                var cookiePoll = setInterval(function () {
-                    if (oldCookie != document.cookie) {
-                        // stop polling
-                        clearInterval(cookiePoll);
-
-                        // assuming a login happened, reload page
-                        window.location.reload();
-                    }
-                }, 1000); // check every second
+        function activateInput(actionName) {
+            var el1 = document.getElementById("search");
+            var el2 = document.getElementById("reset");
+            var el3 = document.getElementById("delete");
+            el1.disabled = true;
+            el2.disabled = true;
+            el3.disabled = true;
+            if (actionName == "search") {
+                el1.disabled = false;
+            }
+            if (actionName == "reset") {
+                el2.disabled = false;
+            }
+            if (actionName == "delete") {
+                el3.disabled = false;
             }
         }
-        function activateInput(name) {
-            document.getElementById('search').disabed = true;
-            document.getElementById('reset').disabed = true;
-            document.getElementById('delete').disabed = true;
-            // document.getElementById('delete').setAttribute("disabled", true);
-            if (name == 'search'){
-                document.getElementById('search').disabed = false;
-            }if (name == 'reset'){
-                document.getElementById('reset').disabed = false;
-            }if (name == 'delete'){
-                document.getElementById('delete').disabed = false;
+
+        function checkAll(source) {
+            var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            for (var i = 0; i < checkboxes.length; i++) {
+                if (checkboxes[i] != source)
+                    checkboxes[i].checked = source.checked;
             }
         }
-        // <label class="col-sm-2 col-form-label">Gender:</label>Id('delete').onclick = function() {
-        //     document.forms.my.reset(); // сбрасываем форму
-        //     location.reload(); // перезагружаем страницу
-        // }
-
     </script>
 </head>
 
 <body>
 <h1>List Students</h1>
+
 <form method="post">
     <div class="form-group row">
         <div class="col-1">
@@ -136,12 +128,14 @@
         </div>
         <div class="col-3"></div>
         <div class="col-1">
-            <input type="hidden" id="search" name="action" value="SEARCH" >
-            <button type="submit" class="btn btn-secondary btm-sm" name="search" onclick="activateInput(name)">Search</button>
+            <input type="hidden" id="search" name="action" value="SEARCH" disabled>
+            <button type="submit" class="btn btn-secondary btm-sm" name="search" onclick="activateInput(name)">Search
+            </button>
         </div>
         <div class="col">
-            <input type="hidden" id="reset" name="action" value="RESET" >
-            <button type="reset" class="btn btn-secondary btm-sm" name="reset" onclick="activateInput(name)">Reset</button>
+            <input type="hidden" id="reset" name="action" value="RESET" disabled>
+            <button type="submit" class="btn btn-secondary btm-sm" name="reset" onclick="activateInput(name)">Reset
+            </button>
         </div>
     </div>
 </form>
@@ -149,9 +143,12 @@
 <form method="post" id="list">
     <table id="ViewStudents" class="table table-hover">
         <thead>
+        <%
+            Set<Student> students = (Set<Student>) request.getAttribute("students");
+        %>
         <tr>
             <th scope="col">ID</th>
-            <td><input type="checkbox" name="allCheck"></td>
+            <td><input type="checkbox" onclick="checkAll(this)"></td>
             <th scope="col">Photo</th>
             <th scope="col">Name</th>
             <th scope="col">Birth Day</th>
@@ -165,7 +162,6 @@
         </tr>
         </thead>
         <%
-            Set<Student> students = (Set<Student>) request.getAttribute("students");
             for (Student student : students) {
         %>
         <tbody>
@@ -211,9 +207,8 @@
             </td>
             <td><%
                 for (Discipline discipline : student.getDisciplines()) {%>
-                <%=discipline.getTitle()%><br>
+                <%=discipline.getTitle()%>: <%=discipline.getAverage().getValue()%><br>
                 <%}%>
-                <%--            <hr>Total Average:--%>
             </td>
             <td>
                 <button type="submit" class="btn btn-success" name="edit"
@@ -226,20 +221,16 @@
                 </button>
             </td>
         </tr>
-
         <%}%>
-
         </tbody>
     </table>
 
     <button type="submit" class="btn btn-secondary btm-sm" name="add_student"
             onclick="window.open('/student?action=EDIT&studentId=0','MyWindow' ,400,400);">Add New
     </button>
-        <input type="hidden" name="action" id="delete" value="DELETE" disabled>
-    <button type="submit" class="btn btn-secondary btm-sm" onchange="activateInput(name)">Delete
+    <input type="hidden" name="action" id="delete" value="DELETE" disabled>
+    <button type="submit" name="delete" class="btn btn-secondary btm-sm" onchange="activateInput(name)">Delete
     </button>
 </form>
-<%--<input type="button" value="Reload Page" onClick="document.location.reload(true)">--%>
-
 </body>
 </html>

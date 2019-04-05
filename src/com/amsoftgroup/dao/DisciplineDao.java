@@ -1,8 +1,6 @@
 package com.amsoftgroup.dao;
 
-import com.amsoftgroup.model.Discipline;
-import com.amsoftgroup.model.Student;
-import com.amsoftgroup.model.Teacher;
+import com.amsoftgroup.model.*;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -32,6 +30,7 @@ public class DisciplineDao {
                 discipline.setId(Long.parseLong(rs.getString("id")));
                 discipline.setTitle(rs.getString("title"));
                 discipline.getTeacher().setId(Long.parseLong(rs.getString("teacher_id")));
+
                 disciplines.add(discipline);
                 System.out.println(rs.getLong("id") + " " + rs.getString("title") + " " + rs.getLong("teacher_id"));
             }
@@ -106,14 +105,12 @@ public class DisciplineDao {
     }
 
     public Set<Discipline> getDisciplineById(Long studentId) {
-        String sql = "select P.id, " +
-                "D.id as did, D.title, T.id as tid, " +
-                "M.id, M.value  " +
+        String sql = "select distinct  " +
+                "D.id as did, D.title, P.id, T.id as tid " +
                 "from university.persons as P " +
                 "left join university.students as S on S.id = P.id " +
                 "left join university.disciplines_to_students as DS on S.id = DS.student_id " +
                 "left join university.disciplines as D on DS.discipline_id = D.id " +
-                "left join university.marks as M on D.id = M.discipline_id " +
                 "left join university.teachers as T on T.id = D.teacher_id " +
                 "where P.id = ? ";
         Set<Discipline> disciplines = new HashSet<>();
@@ -130,8 +127,15 @@ public class DisciplineDao {
                 Teacher teacher = new Teacher();
                 teacher.setId(Long.parseLong(rs.getString("tid")));
 
-                discipline.setTeacher(teacher);
+                discipline.setTeacher(new TeacherDao(connection).getTeacherById(teacher.getId()));
+                Set<Mark> marks = new MarkDao(connection).getMarkByDisciplineId(discipline.getId(), studentId);
+                discipline.setMarks((HashSet<Mark>) marks);
+
+                Average average = new AverageDao(connection).getAverageByDiscipline(discipline.getId(), studentId);
+                discipline.setAverage(average);
                 disciplines.add(discipline);
+
+
             }
         } catch (SQLException e) {
             e.printStackTrace();

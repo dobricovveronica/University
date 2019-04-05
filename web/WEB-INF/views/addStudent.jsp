@@ -135,31 +135,39 @@
             <div class="col-1">
                 <label class="col-sm-2 col-form-label">Phone(s):</label>
             </div>
-            <div class="col-1">
-                <select class="form-control" name="phone_type">
-                    <option selected>All</option>
-                    <% Set<PhoneType> phoneTypes = (Set<PhoneType>) request.getAttribute("phoneTypes");
-                        for (PhoneType phoneType : phoneTypes) {
-                    %>
-                    <option  value="<%=phoneType.getId()%>"><%=phoneType.getName()%>
-                    </option>
+
+                    <% Set<Phone> phones = new HashSet<>();
+                        if (studentId != 0) {
+                        phones = (Set<Phone>) student.getPhones();
+                    }
+                        for (Phone phone : phones) {%>
+                    <div class="col-1">
+                        <select class="form-control" name="phone_type">
+                            <option <%=(studentId == 0) ? "hidden" : ""%> selected value="">Select phone type</option>
+                            <%
+                                for (PhoneType phoneType : phoneTypes) {
+                            %>
+                            <option <%=(studentId != 0) ? ((phone.getPhoneType().getId() == phoneType.getId()) ? "selected" : "") : ""%>
+                                    value="<%=phoneType.getId()%>"><%=phoneType.getName()%>
+                            </option>
+                            <%}%>
+                        </select>
+                    </div>
+                    <div class="col-2">
+                        <input type="text" class="form-control" placeholder="Phone number" name="phone"
+                               value="<%=(studentId!=0)?phone.getValue():""%>">
+                    </div>
+                    <div class="col-1.5">
+                        <button type="button" class="btn btn-success">Add</button>
+                        <button type="button" class="btn btn-danger">Delete</button>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="col-1">
+                    </div>
                     <%}%>
-                </select>
-            </div>
-            <div class="col-2">
-                <input type="text" class="form-control" placeholder="Phone number" name="phone" value="">
-            </div>
-            <div class="col-1.5">
-                <button type="button" class="btn btn-success">Add</button>
-                <button type="button" class="btn btn-danger">Delete</button>
-            </div>
-            <div class="col-2">
-<%--               <img src="" height="200" alt="Image preview">--%>
-<%--                <input type="file" class="form-control" placeholder="Picture File" name="image" onchange="previewFile()">--%>
-            </div>
-            <div class="col-1">
-                <button type="button" class="btn btn-secondary btm-sm" onclick="previewFile()">Browse</button>
-            </div>
+
+
         </div>
         <br>
     </div>

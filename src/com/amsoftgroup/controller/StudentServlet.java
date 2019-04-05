@@ -107,7 +107,7 @@ public class StudentServlet extends HttpServlet {
                 requestDispatcher.forward(request, response);
                 break;
             case "RESET":
-                response.sendRedirect("/student?action=LIST");
+                response.sendRedirect("/student/");
                 break;
         }
     }
@@ -147,13 +147,19 @@ public class StudentServlet extends HttpServlet {
         student.setLibraryAbonament(libraryAbonament);
 
         Set<Phone> phones = new HashSet<>();
-        Phone phone = new Phone();
-        PhoneType phoneType = new PhoneType();
-        phoneType.setId(Long.parseLong(request.getParameter("phone_type")));
-        phone.setPhoneType(phoneType);
-        phone.setValue(request.getParameter("phone"));
-        phones.add(phone);
-
+        String[] phoneTypeId = request.getParameterValues("phoneType[]");
+        String[] phoneId = request.getParameterValues("phoneId[]");
+        String[] phoneValue = request.getParameterValues("phoneNumber[]");
+        for (int i = 0; i < phoneId.length; i++){
+            Phone phone = new Phone();
+            PhoneType phoneType = new PhoneType();
+            phoneType.setId(Long.parseLong(phoneTypeId[i]));
+            if (!phoneId[i].equals("")){
+            phone.setId(Long.parseLong(phoneId[i]));}
+            phone.setValue(phoneValue[i]);
+            phone.setPhoneType(phoneType);
+            phones.add(phone);
+        }
         student.setPhones(phones);
 
         if (student.getId() != 0) {
@@ -194,6 +200,7 @@ public class StudentServlet extends HttpServlet {
                 req.setAttribute("students", students);
                 disciplines = studentService.getAllDisciplines();
                 req.setAttribute("disciplines", disciplines);
+
                 requestDispatcher = getServletContext().getRequestDispatcher("/WEB-INF/views/list.jsp");
                 requestDispatcher.forward(req, resp);
                 break;
@@ -216,8 +223,8 @@ public class StudentServlet extends HttpServlet {
                 studentId = Long.parseLong(req.getParameter("studentId"));
                 student = studentService.getStudentById(studentId);
                 req.setAttribute("student", student);
-//                disciplines = studentService.getDisciplineById(studentId);
-//                req.setAttribute("disciplines", disciplines);
+                disciplines = studentService.getDisciplineById(studentId);
+                req.setAttribute("disciplines", disciplines);
                 Set<Teacher> teachers = studentService.getAllTeacher();
                 req.setAttribute("teachers", teachers);
                 requestDispatcher = getServletContext().getRequestDispatcher("/WEB-INF/views/mark.jsp");

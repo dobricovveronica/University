@@ -1,6 +1,7 @@
 package com.amsoftgroup.dao;
 
 import com.amsoftgroup.model.Average;
+import com.amsoftgroup.model.Discipline;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -55,14 +56,12 @@ public class AverageDao {
     }
 
     public void updateAverage(Average average) {
-        String sql = "UPDATE university.averages SET student_id=?, discipline_id=?, value=? where id = ?";
+        String sql = "UPDATE university.averages SET  value=? where id = ?";
 
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setLong(1, average.getStudent().getId());
-            statement.setLong(2, average.getDiscipline().getId());
-            statement.setDouble(3, average.getValue());
-            statement.setLong(4, average.getId());
+            statement.setDouble(1, average.getValue());
+            statement.setLong(2, average.getId());
             System.out.println(statement.toString());
             statement.execute();
 
@@ -86,4 +85,26 @@ public class AverageDao {
             e.printStackTrace();
         }
     }
+
+    public Average getAverageByDiscipline(Long disciplineId, Long studentId) {
+        String sql = "SELECT * FROM university.averages where student_id = ? and discipline_id = ?";
+//        Set<Average> averages = new HashSet<>();
+        Average average = new Average();
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setLong(1, studentId);
+            statement.setLong(2, disciplineId);
+            System.out.println(statement.toString());
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+
+                average.setValue(rs.getDouble("value"));
+                System.out.println(rs.getLong("id") + " " + rs.getLong("student_id") + " " + rs.getLong("discipline_id") + " " + rs.getString("value"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return average;
+    }
+
 }

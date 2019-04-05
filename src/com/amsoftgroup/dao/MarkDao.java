@@ -1,6 +1,8 @@
 package com.amsoftgroup.dao;
 
+import com.amsoftgroup.model.Discipline;
 import com.amsoftgroup.model.Mark;
+import com.amsoftgroup.model.Student;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -29,7 +31,7 @@ public class MarkDao {
                 mark.getStudent().setId(Long.parseLong(rs.getString("student_id")));
                 mark.getDiscipline().setId(Long.parseLong(rs.getString("discipline_id")));
                 mark.getTeacher().setId(Long.parseLong(rs.getString("teacher_id")));
-                mark.setValue(Long.parseLong(rs.getString("value")));
+                mark.setValue(Double.parseDouble(rs.getString("value")));
                 mark.setCreateData(LocalDate.parse(String.valueOf(rs.getDate("create_data"))));
                 marks.add(mark);
                 System.out.println(rs.getLong("id") + " " + rs.getString("title") + " " + rs.getLong("teacher_id"));
@@ -99,12 +101,33 @@ public class MarkDao {
             mark.getStudent().setId(Long.parseLong(rs.getString("student_id")));
             mark.getDiscipline().setId(Long.parseLong(rs.getString("discipline_id")));
             mark.getTeacher().setId(Long.parseLong(rs.getString("teacher_id")));
-            mark.setValue(Long.parseLong(rs.getString("value")));
+            mark.setValue(Double.parseDouble(rs.getString("value")));
             mark.setCreateData(LocalDate.parse(String.valueOf(rs.getDate("create_data"))));
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return mark;
     }
+
+    public Set<Mark> getMarkByDisciplineId(Long disciplineId, Long studentId) {
+        String sql = "SELECT * FROM university.marks where marks.discipline_id = ? and marks. student_id = ?";
+        Set<Mark> marks = new HashSet<>();
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setLong(1, disciplineId);
+            statement.setLong(2, studentId);
+            ResultSet rs = statement.executeQuery();
+            while (rs.next()) {
+                Mark mark = new Mark();
+                mark.setValue(Double.parseDouble(rs.getString("value")));
+                marks.add(mark);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return marks;
+    }
+
 
 }

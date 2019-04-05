@@ -55,7 +55,6 @@ public class StudentFilterDao {
             while (rs.next()) {
                 Student student = new Student();
                 student.setId(Long.parseLong(rs.getString("pid")));
-//                student = studentDao.builStudent(rs, student);
                 students.add(studentDao.builStudent(rs, student));
             }
 
@@ -77,7 +76,7 @@ public class StudentFilterDao {
                 count++;
             }
             if (studentFilter.getStudentAddress() != null) {
-                String s2 = "(A.city LIKE '"+ studentFilter.getStudentAddress() +"%' or A.country LIKE '"+ studentFilter.getStudentAddress() +"%' or A.address LIKE '"+ studentFilter.getStudentAddress() +"%')";
+                String s2 = "(A.city LIKE '" + studentFilter.getStudentAddress() + "%' or A.country LIKE '" + studentFilter.getStudentAddress() + "%' or A.address LIKE '" + studentFilter.getStudentAddress() + "%')";
                 builder.append(count > 0 ? prefix + s2 : s2);
                 count++;
             }
@@ -92,7 +91,7 @@ public class StudentFilterDao {
                 count++;
             }
             if (studentFilter.getDisciplineId() != null) {
-                String s5 = " P.id = DtoS.student_id and DtoS.discipline_id = '" +  studentFilter.getDisciplineId() + "'";
+                String s5 = " P.id = DtoS.student_id and DtoS.discipline_id = '" + studentFilter.getDisciplineId() + "'";
                 builder.append(count > 0 ? prefix + s5 : s5);
                 count++;
             }
@@ -101,16 +100,18 @@ public class StudentFilterDao {
                 builder.append(count > 0 ? prefix + s6 : s6);
                 count++;
             }
-            if ((studentFilter.getStartDate()!= null) && (studentFilter.getEndDate()!= null)){
+            if ((studentFilter.getStartDate() != null) && (studentFilter.getEndDate() != null)) {
                 String s8 = "P.date_of_birth between '" + studentFilter.getStartDate() + "' and '" + studentFilter.getEndDate() + "'";
                 builder.append(count > 0 ? prefix + s8 : s8);
-                count++;} else{
-                String s7 = "P.date_of_birth = '" + studentFilter.getStartDate() + "'";
-                builder.append(count > 0 ? prefix + s7 : s7);
                 count++;
+            } else {
+                if (studentFilter.getStartDate() != null) {
+                    String s7 = "P.date_of_birth = '" + studentFilter.getStartDate() + "'";
+                    builder.append(count > 0 ? prefix + s7 : s7);
+                    count++;
+                }
             }
         }
-
         return builder.toString();
     }
 }
