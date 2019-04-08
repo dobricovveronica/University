@@ -5,12 +5,21 @@ import java.time.LocalDate;
 public class StudentFilter {
     private String name;
     private String studentAddress;
-    private String  disciplineId;
+    private String disciplineId;
     private String disciplineTitle;
     private String groupId;
     private String gender;
     private String startDate;
     private String endDate;
+    private String average;
+
+    public String getAverage() {
+        return average;
+    }
+
+    public void setAverage(String average) {
+        this.average = average;
+    }
 
     public String getEndDate() {
         return endDate;

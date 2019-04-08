@@ -185,6 +185,14 @@ public class StudentDao {
         student.setGroup(group);
 
         student.setDisciplines(new DisciplineDao(connection).getDisciplineById(student.getId()));
+        Double summ = 0.0;
+        for (Discipline discipline : student.getDisciplines()){
+            summ += discipline.getAverage().getValue();
+        }
+        Double average = summ / student.getDisciplines().size();
+        Average studentAverage = new Average();
+        studentAverage.setValue(average);
+        student.setAverage(studentAverage);
         return student;
     }
 }

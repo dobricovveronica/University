@@ -2,7 +2,6 @@ package com.amsoftgroup.controller;
 
 import com.amsoftgroup.model.*;
 
-import javax.imageio.ImageIO;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -10,13 +9,9 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.Part;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
+
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.Set;
 
 import static java.util.Objects.isNull;
@@ -32,25 +27,15 @@ public class StudentServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         String action = request.getParameter("action");
-
-        Student student = new Student();
-        LibraryAbonament libraryAbonament = new LibraryAbonament();
-        Mark mark = new Mark();
-        Discipline discipline = new Discipline();
-        Teacher teacher = new Teacher();
+        RequestDispatcher requestDispatcher;
 
         switch (action) {
             case "MARK":
-                student.setId(Long.parseLong(request.getParameter("studentId")));
-                teacher.setId(Long.parseLong(request.getParameter("teacher")));
-                discipline.setId(Long.parseLong(request.getParameter("discipline")));
-                mark.setStudent(student);
-                mark.setTeacher(teacher);
-                mark.setDiscipline(discipline);
-                mark.setValue(Double.parseDouble(request.getParameter("mark")));
+                Mark mark = (Mark) request.getAttribute("mark");
                 studentService.addMarkByStudentId(mark);
                 break;
             case "LIBRARY_ABONAMENT":
+               LibraryAbonament libraryAbonament = new LibraryAbonament();
                 libraryAbonament.setId(Long.parseLong(request.getParameter("abonamentId")));
                 libraryAbonament.setStatus(request.getParameter("status"));
                 libraryAbonament.setStartDate(LocalDate.parse(String.valueOf(request.getParameter("start_date"))));
@@ -58,7 +43,7 @@ public class StudentServlet extends HttpServlet {
                 studentService.updateLibraryAbonamentByStudentId(libraryAbonament);
                 break;
             case "EDIT":
-                student = buildStudent(request);
+                Student student = (Student) request.getAttribute("student");
                 if (student.getId() != 0) {
                     studentService.updateStudent(student);
                 } else {
@@ -71,31 +56,7 @@ public class StudentServlet extends HttpServlet {
                 studentService.deleteStudent(studentsId);
                 break;
             case "SEARCH":
-                StudentFilter studentFilter = new StudentFilter();
-                if (!request.getParameter("name").equals("")) {
-                    studentFilter.setName(request.getParameter("name"));
-                }
-                if (!request.getParameter("studentAddress").equals("")) {
-                    studentFilter.setStudentAddress(request.getParameter("studentAddress"));
-                }
-                if (!request.getParameter("startDate").equals("")) {
-                    studentFilter.setStartDate(String.valueOf(request.getParameter("startDate")));
-                }
-                if (!request.getParameter("endDate").equals("")) {
-                    studentFilter.setEndDate(String.valueOf(request.getParameter("endDate")));
-                }
-                if (!request.getParameter("discipline").equals("")) {
-                    studentFilter.setDisciplineId(request.getParameter("discipline"));
-                }
-                if (!request.getParameter("disciplineTitle").equals("")) {
-                    studentFilter.setDisciplineTitle(request.getParameter("disciplineTitle"));
-                }
-                if (!request.getParameter("group").equals("")) {
-                    studentFilter.setGroupId(request.getParameter("group"));
-                }
-                if (!request.getParameter("gender").equals("")) {
-                    studentFilter.setGender(request.getParameter("gender"));
-                }
+                StudentFilter studentFilter = (StudentFilter) request.getAttribute("studentFilter");
 
                 Set<Student> students = studentService.searchStudents(studentFilter);
                 request.setAttribute("students", students);
@@ -103,7 +64,7 @@ public class StudentServlet extends HttpServlet {
                 request.setAttribute("groups", groups);
                 Set<Discipline> disciplines = studentService.getAllDisciplines();
                 request.setAttribute("disciplines", disciplines);
-                RequestDispatcher requestDispatcher = getServletContext().getRequestDispatcher("/WEB-INF/views/list.jsp");
+                requestDispatcher = getServletContext().getRequestDispatcher("/WEB-INF/views/list.jsp");
                 requestDispatcher.forward(request, response);
                 break;
             case "RESET":
@@ -112,67 +73,6 @@ public class StudentServlet extends HttpServlet {
         }
     }
 
-    public Student buildStudent(HttpServletRequest request) throws IOException, ServletException {
-        Student student = new Student();
-        Address address = new Address();
-        LibraryAbonament libraryAbonament = new LibraryAbonament();
-        Group group = new Group();
-
-        student.setId(Long.parseLong(request.getParameter("studentId")));
-        address.setCountry(request.getParameter("country"));
-        address.setCity(request.getParameter("city"));
-        address.setAddress(request.getParameter("address"));
-
-        student.setFirstName(request.getParameter("first_name"));
-        student.setLastName(request.getParameter("last_name"));
-
-        student.setDateOfBirth(LocalDate.parse(String.valueOf(request.getParameter("date_of_birth"))));
-        student.setGender(request.getParameter("gender").charAt(0));
-        student.setMail(request.getParameter("mail"));
-
-        InputStream inputStream = null;
-        Part filePart = request.getPart("image");
-        if (filePart != null) {
-            inputStream = filePart.getInputStream();
-            BufferedImage bufferedImage = ImageIO.read(inputStream);
-            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-            ImageIO.write(bufferedImage, "jpg", byteArrayOutputStream);
-            student.setPicture(byteArrayOutputStream.toByteArray());
-        }
-
-        group.setId(Long.parseLong(request.getParameter("group")));
-        student.setGroup(group);
-
-        libraryAbonament.setStatus("None");
-        student.setLibraryAbonament(libraryAbonament);
-
-        Set<Phone> phones = new HashSet<>();
-        String[] phoneTypeId = request.getParameterValues("phoneType[]");
-        String[] phoneId = request.getParameterValues("phoneId[]");
-        String[] phoneValue = request.getParameterValues("phoneNumber[]");
-        for (int i = 0; i < phoneId.length; i++){
-            Phone phone = new Phone();
-            PhoneType phoneType = new PhoneType();
-            phoneType.setId(Long.parseLong(phoneTypeId[i]));
-            if (!phoneId[i].equals("")){
-            phone.setId(Long.parseLong(phoneId[i]));}
-            phone.setValue(phoneValue[i]);
-            phone.setPhoneType(phoneType);
-            phones.add(phone);
-        }
-        student.setPhones(phones);
-
-        if (student.getId() != 0) {
-            address.setId(Long.parseLong(request.getParameter("addressId")));
-            student.setId(Long.parseLong(request.getParameter("studentId")));
-            student.setAddresses(address);
-
-        } else {
-            student.setAddresses(address);
-
-        }
-        return student;
-    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -183,7 +83,6 @@ public class StudentServlet extends HttpServlet {
             action = "LIST";
         }
         RequestDispatcher requestDispatcher;
-        Set<StudentFilter> studentFilters;
         Set<Student> students;
         Set<Group> groups;
         Set<PhoneType> phoneTypes;

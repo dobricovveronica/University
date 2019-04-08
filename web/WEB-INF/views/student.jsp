@@ -15,6 +15,8 @@
 <head>
     <title>Add / Edit Student</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="http://malsup.github.com/jquery.form.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js"></script>
     <style>
         <%@include file="/WEB-INF/views/css/bootstrap.min.css" %>
         <%@include file="/WEB-INF/views/css/style.css" %>
@@ -46,7 +48,7 @@
 </head>
 <body>
 <h1>Add / Edit Student</h1>
-<form method="post" enctype="multipart/form-data">
+<form method="post" enctype="multipart/form-data" id="editsavestudentform" >
     <% Student student = new Student();
         long studentId = (Long) request.getAttribute("studentId");
         if (!isNull(studentId) && studentId != 0) {
@@ -229,6 +231,14 @@
             <button type="button" onclick="window.close()" class="btn btn-secondary btm-sm">Cancel</button>
         </div>
     </div>
+    <script>
+        $(document).ready(function () {
+            $('#editsavestudentform').ajaxForm(function () {
+                window.opener.location.reload();
+                window.close();
+            });
+        });
+    </script>
 </form>
 </body>
 </html>

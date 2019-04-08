@@ -111,6 +111,11 @@ public class StudentFilterDao {
                     count++;
                 }
             }
+            if (studentFilter.getAverage() != null){
+                String s9 = "(select avg(A.value) from university.averages as A where A.student_id = P.id) = '" + studentFilter.getAverage() +"'";
+                builder.append(count > 0 ? prefix + s9 : s9);
+                count++;
+            }
         }
         return builder.toString();
     }

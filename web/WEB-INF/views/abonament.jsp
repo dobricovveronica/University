@@ -16,27 +16,28 @@
     <style>
         <%@include file="/WEB-INF/views/css/bootstrap.min.css" %>
     </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="http://malsup.github.com/jquery.form.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js"></script>
     <script>
-        var myVar;
-
         function exit() {
-            // document.getElementById("form").submit();
-            // setTimeout("alert('Hello')", 1000);
-            console.log('exit');
-            document.forms['form'].submit();
-            setTimeout("myFunction", 3000);
-        }
-
-        function myFunction() {
-            window.opener.location.reload();
-            window.close();
+            // document.getElementById('myForm').submit();
+            setTimeout('alert("Hello! I am an alert box!!")', 3000);
+            return false;
         }
 
         function inactive() {
-
-            if (document.getElementsByName("status").values() == "None") {
-                document.getElementsByName("start_date").disabled = true;
-                document.getElementsByName("end_date").disabled = true;
+            var el = document.getElementById("status").value;
+            var sD = document.getElementById("startDate");
+            var eD = document.getElementById("endDate");
+            if (el === "None") {
+                sD.disabled = true;
+                eD.disabled = true;
+                sD.value = 'null';
+                eD.value = 'null';
+            } else {
+                sD.disabled = false;
+                eD.disabled = false;
             }
         }
     </script>
@@ -45,7 +46,7 @@
 <%Student student = (Student) request.getAttribute("student"); %>
 <h1><%=student.getFirstName()%> <%=student.getLastName()%> - student abonament</h1>
 
-<form method="post" name="form">
+<form method="post" id="myForm">
     <%java.text.DateFormat df = new java.text.SimpleDateFormat("MM/dd/yyyy"); %>
     <input type="hidden" name="abonamentId" value="<%=student.getLibraryAbonament().getId()%>">
     <div class="form-group row">
@@ -53,7 +54,7 @@
             <label class="col-sm-2 col-form-label">Status:</label>
         </div>
         <div class="col-3">
-            <select name="status" class="form-control" onchange="inactive()">
+            <select name="status" id="statusId" class="form-control">
                 <% Set<LibraryAbonament> libraryAbonaments = (Set<LibraryAbonament>) request.getAttribute("libraryAbonaments");
                     for (LibraryAbonament libraryAbonament : libraryAbonaments) {
                 %>
@@ -70,7 +71,7 @@
             <label class="col-sm-2 col-form-label">StartDate:</label>
         </div>
         <div class="col-3">
-            <input type="date" class="form-control" name="start_date"
+            <input type="date" class="form-control" name="start_date" id="startDate"
                    value="<%=((student.getLibraryAbonament().getStartDate() != null)?student.getLibraryAbonament().getStartDate():"Select date")%>">
         </div>
     </div>
@@ -79,18 +80,26 @@
             <label class="col-sm-2 col-form-label">EndDate:</label>
         </div>
         <div class="col-3">
-            <input type="date" class="form-control" name="end_date"
+            <input type="date" class="form-control" name="end_date" id="endDate"
                    value="<%=((student.getLibraryAbonament().getEndDate() != null)?student.getLibraryAbonament().getEndDate():"Select date")%>">
         </div>
     </div>
     <div class="form-row">
         <div class="col-2"></div>
         <div class="col-2">
-            <button type="submit" class="btn btn-secondary btm-sm" onclick="exit()">Save</button>
+            <button type="submit" class="btn btn-secondary btm-sm" >Save</button>
 
             <button type="button" onclick="window.close()" class="btn btn-secondary btm-sm">Cancel</button>
         </div>
     </div>
+    <script>
+    $(document).ready(function () {
+        $('#myForm').ajaxForm(function () {
+            window.opener.location.reload();
+            window.close();
+        });
+    });
+</script>
 </form>
 </body>
 </html>

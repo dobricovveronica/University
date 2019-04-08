@@ -31,7 +31,7 @@ public class Student extends Person {
         return average;
     }
 
-    public void setAverages(Average average) {
+    public void setAverage(Average average) {
         this.average = average;
     }
 }
