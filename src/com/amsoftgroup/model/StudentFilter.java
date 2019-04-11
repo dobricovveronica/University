@@ -1,6 +1,5 @@
 package com.amsoftgroup.model;
 
-import java.time.LocalDate;
 
 public class StudentFilter {
     private String name;

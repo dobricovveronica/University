@@ -19,6 +19,7 @@ public class StudentService {
     private MarkDao markDao;
     private AddressDao addressDao;
     private PhoneDao phoneDao;
+    private AverageDao averageDao;
     private StudentFilterDao studentFilterDao;
 
 
@@ -34,6 +35,7 @@ public class StudentService {
         this.markDao = new MarkDao(connection);
         this.addressDao = new AddressDao(connection);
         this.phoneDao = new PhoneDao(connection);
+        this.averageDao = new AverageDao(connection);
         this.studentFilterDao = new StudentFilterDao(connection);
 
     }
@@ -87,15 +89,22 @@ public class StudentService {
         student.setLibraryAbonament(libraryAbonament);
         student.setId(personDao.insertPerson(student));
 
-        Set<Phone> phones = new HashSet<>();
+
         for (Phone phone : student.getPhones()) {
             phone.setId(phoneDao.insertPhone(phone));
             phoneDao.addPhoneToPerson(phone, student);
-            phones.add(phone);
+
+        }
+        studentDao.insertStudent(student);
+        for (Discipline discipline : student.getDisciplines()) {
+
+            Average average = new Average();
+            average.setDiscipline(discipline);
+            average.setStudent(student);
+            averageDao.insertAverage(average);
+            disciplineDao.addDisciplineToStudent(student, discipline);
         }
 
-        studentDao.insertStudent(student);
-        disciplineDao.addDisciplineToStudent(student);
     }
 
     public void updateStudent(Student student) {
@@ -147,7 +156,12 @@ public class StudentService {
         Long id;
         for (int i = 0; i < list.length; i++) {
             id = Long.parseLong(list[i]);
-            studentDao.deleteStudent(id);
+            Student student = new Student();
+            student = studentDao.getStudentById(id);
+            studentDao.deleteStudent(student.getId());
+            personDao.deletePerson(student.getId());
+            libraryAbonamentDao.deleteLibraryAbonament(student.getLibraryAbonament().getId());
+            addressDao.deleteAddress(student.getAddresses().getId());
         }
     }
 }

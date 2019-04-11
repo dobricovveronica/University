@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-import java.time.LocalDate;
 import java.util.Set;
 
 import static java.util.Objects.isNull;
@@ -35,11 +34,7 @@ public class StudentServlet extends HttpServlet {
                 studentService.addMarkByStudentId(mark);
                 break;
             case "LIBRARY_ABONAMENT":
-               LibraryAbonament libraryAbonament = new LibraryAbonament();
-                libraryAbonament.setId(Long.parseLong(request.getParameter("abonamentId")));
-                libraryAbonament.setStatus(request.getParameter("status"));
-                libraryAbonament.setStartDate(LocalDate.parse(String.valueOf(request.getParameter("start_date"))));
-                libraryAbonament.setEndDate(LocalDate.parse(String.valueOf(request.getParameter("end_date"))));
+                LibraryAbonament libraryAbonament = (LibraryAbonament) request.getAttribute("libraryAbonament");
                 studentService.updateLibraryAbonamentByStudentId(libraryAbonament);
                 break;
             case "EDIT":
@@ -54,10 +49,11 @@ public class StudentServlet extends HttpServlet {
                 String[] studentsId;
                 studentsId = request.getParameterValues("check[]");
                 studentService.deleteStudent(studentsId);
+                response.sendRedirect("/student/");
                 break;
             case "SEARCH":
                 StudentFilter studentFilter = (StudentFilter) request.getAttribute("studentFilter");
-
+                request.setAttribute("studentFilter", studentFilter);
                 Set<Student> students = studentService.searchStudents(studentFilter);
                 request.setAttribute("students", students);
                 Set<Group> groups = studentService.getAllGroups();
@@ -71,6 +67,7 @@ public class StudentServlet extends HttpServlet {
                 response.sendRedirect("/student/");
                 break;
         }
+
     }
 
 
@@ -92,7 +89,6 @@ public class StudentServlet extends HttpServlet {
         Long studentId;
         switch (action) {
             case "LIST":
-
                 groups = studentService.getAllGroups();
                 req.setAttribute("groups", groups);
                 students = studentService.getAllStudents();
@@ -112,11 +108,12 @@ public class StudentServlet extends HttpServlet {
                 req.setAttribute("studentId", studentId);
                 groups = studentService.getAllGroups();
                 req.setAttribute("groups", groups);
+                disciplines = studentService.getAllDisciplines();
+                req.setAttribute("disciplines", disciplines);
                 phoneTypes = studentService.getAllPhoneTypes();
                 req.setAttribute("phoneTypes", phoneTypes);
                 requestDispatcher = getServletContext().getRequestDispatcher("/WEB-INF/views/student.jsp");
                 requestDispatcher.forward(req, resp);
-
                 break;
             case "MARK":
                 studentId = Long.parseLong(req.getParameter("studentId"));

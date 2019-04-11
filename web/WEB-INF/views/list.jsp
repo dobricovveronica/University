@@ -1,10 +1,6 @@
-<%@ page import="com.amsoftgroup.model.Discipline" %>
-<%@ page import="com.amsoftgroup.model.Group" %>
-<%@ page import="com.amsoftgroup.model.Phone" %>
-<%@ page import="com.amsoftgroup.model.Student" %>
 <%@ page import="java.util.Set" %>
 <%@ page import="java.util.Base64" %>
-
+<%@ page import="com.amsoftgroup.model.*" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -49,21 +45,27 @@
 <h1>List Students</h1>
 
 <form method="post">
+    <% StudentFilter studentFilter = (StudentFilter) request.getAttribute("studentFilter");
+
+    %>
     <div class="form-group row">
         <div class="col-1">
             <label class="col-sm-2 col-form-label"> Name:</label>
         </div>
         <div class="col-2">
-            <input type="text" class="form-control" name="name" placeholder="Partial name">
+            <input type="text" class="form-control" name="name" placeholder="Partial name"
+                   value="<%=(studentFilter != null && studentFilter.getName() != null ? studentFilter.getName() :"")%>">
         </div>
         <div class="col-1">
             <label class="col-3 col-form-label">Date:</label>
         </div>
         <div class="col-2">
-            <input type="date" class="form-control" name="startDate" placeholder="Start Date">
+            <input type="date" class="form-control" name="startDate" placeholder="Start Date"
+                   value="<%=(studentFilter != null && studentFilter.getStartDate() != null ? studentFilter.getStartDate() : "")%>">
         </div>
         <div class="col-2">
-            <input type="date" class="form-control" name="endDate" placeholder="End Date">
+            <input type="date" class="form-control" name="endDate" placeholder="End Date"
+                   value="<%=(studentFilter != null && studentFilter.getEndDate() != null ? studentFilter.getEndDate() : "")%>">
         </div>
     </div>
     <div class="form-row">
@@ -71,24 +73,30 @@
             <label class="col-sm-2 col-form-label">Address:</label>
         </div>
         <div class="col-2">
-            <input type="text" class="form-control" name="studentAddress" placeholder="Partial address">
+            <input type="text" class="form-control" name="studentAddress" placeholder="Partial address"
+                   value="<%=(studentFilter != null && studentFilter.getStudentAddress() != null ? studentFilter.getStudentAddress() : "")%>">
         </div>
         <div class="col-1">
             <label class="col-sm-2 col-form-label">Discipline:</label>
         </div>
         <div class="col-2">
-            <select id="inputState" class="form-control" name="discipline">
-                <option value="" selected>All</option>
+            <select id="inputState" class="form-control" name="discipline" placeholder="Select discipline">
+                <option <%=(studentFilter != null && studentFilter.getDisciplineId() != null) ? "hidden" : ""%> selected
+                                                                                                                value="">
+                    Select discipline
+                </option>
                 <% Set<Discipline> disciplines = (Set<Discipline>) request.getAttribute("disciplines");
                     for (Discipline discipline : disciplines) {
                 %>
-                <option value="<%=discipline.getId()%>"><%=discipline.getTitle()%>
+                <option <%=(studentFilter != null && studentFilter.getDisciplineId() != null && studentFilter.getDisciplineId().equals(String.valueOf(discipline.getId())) ? "selected" : "")%>
+                        value="<%=discipline.getId()%>"><%=discipline.getTitle()%>
                 </option>
                 <%}%>
             </select>
         </div>
         <div class="col-2">
-            <input type="text" class="form-control" placeholder="" name="disciplineTitle">
+            <input type="text" class="form-control" placeholder="Discipline name" name="disciplineTitle"
+                   value="<%=(studentFilter != null && studentFilter.getDisciplineTitle() != null ? studentFilter.getDisciplineTitle(): "")%>">
         </div>
     </div>
     <br>
@@ -97,12 +105,16 @@
             <label class="col-sm-2 col-form-label">Group:</label>
         </div>
         <div class="col-2">
-            <select class="form-control" name="group">
-                <option selected value="">All</option>
+            <select class="form-control" name="group" placeholder="Select group">
+                <option  <%=(studentFilter != null && studentFilter.getGroupId() != null ? "hidden" : "")%> selected
+                                                                                                            value="">
+                    Select group
+                </option>
                 <% Set<Group> groups = (Set<Group>) request.getAttribute("groups");
                     for (Group group : groups) {
                 %>
-                <option value="<%=group.getId()%>"><%=group.getName()%>
+                <option <%=(studentFilter != null && studentFilter.getGroupId() != null && studentFilter.getGroupId().equals(String.valueOf(group.getId())) ? "selected" : "")%>
+                        value="<%=group.getId()%>"><%=group.getName()%>
                 </option>
                 <%}%>
             </select>
@@ -111,7 +123,8 @@
             <label class="col-sm-2 col-form-label">Average:</label>
         </div>
         <div class="col-2">
-            <input type="text" class="form-control" name="average" placeholder="">
+            <input type="text" class="form-control" name="average" placeholder="Student average"
+                   value="<%=(studentFilter != null && studentFilter.getAverage() != null ? studentFilter.getAverage() : "")%>">
         </div>
     </div>
     <br>
@@ -121,9 +134,15 @@
         </div>
         <div class="col-2">
             <div class="form-check form-check-inline">
-                <input class="form-check-input col-2" type="radio" name="gender" value="M"> Male<br>
-                <input class="form-check-input col-2" type="radio" name="gender" value="F"> Female<br>
-                <input class="form-check-input col-2" type="radio" name="gender" value="" checked> All<br>
+                <input class="form-check-input col-2" type="radio" name="gender"
+                       value="M" <%=(studentFilter != null && studentFilter.getGender() != null && studentFilter.getGender().equals("M")) ? "checked" : ""%>>
+                Male<br>
+                <input class="form-check-input col-2" type="radio" name="gender"
+                       value="F" <%=(studentFilter != null && studentFilter.getGender() != null && studentFilter.getGender().equals("F")) ? "checked" : ""%>>
+                Female<br>
+                <input class="form-check-input col-2" type="radio" name="gender"
+                       value="" <%=(studentFilter != null && studentFilter.getGender() != null && (studentFilter.getGender().equals("M") || studentFilter.getGender().equals("F"))) ? "" : "checked"%>>
+                All<br>
             </div>
         </div>
         <div class="col-3"></div>
@@ -140,7 +159,7 @@
     </div>
 </form>
 <br>
-<form method="post" id="list">
+<form method="post" id="list" action="student">
     <table id="ViewStudents" class="table table-hover">
         <thead>
         <%
@@ -195,7 +214,7 @@
                 <%}%>
             </td>
             <td><a href="#" style="color: #221fff;"
-                   onclick="window.open('/student?action=LIBRARY_ABONAMENT&studentId='+ <%=student.getId()%>,'MyWindow', 'width=900, height=400');
+                   onclick="window.open('?action=LIBRARY_ABONAMENT&studentId='+ <%=student.getId()%>,'MyWindow', 'width=900, height=400');
                            return false;"><%="Status: " + student.getLibraryAbonament().getStatus()%>
             </a><br>
                 <p <%=(!student.getLibraryAbonament().getStatus().equals("Active")) ? "hidden" : ""%>>
@@ -212,11 +231,11 @@
             </td>
             <td>
                 <button type="submit" class="btn btn-success" name="edit"
-                        onclick="window.open('/student?action=EDIT&studentId='+ <%=student.getId()%>,'MyWindow' ,'width=1200, height=700');">
+                        onclick="window.open('?action=EDIT&studentId='+ <%=student.getId()%>,'MyWindow' ,'width=1200, height=700'); return false;">
                     Edit
                 </button>
                 <button type="submit" class="btn btn-primary" name="mark"
-                        onclick="window.open('/student?action=MARK&studentId='+ <%=student.getId()%>,'MyWindow' ,'width=900, height=400');">
+                        onclick="window.open('?action=MARK&studentId='+ <%=student.getId()%>,'MyWindow' ,'width=900, height=400'); return false;">
                     Add Mark
                 </button>
             </td>
@@ -226,10 +245,10 @@
     </table>
 
     <button type="submit" class="btn btn-secondary btm-sm" name="add_student"
-            onclick="window.open('/student?action=EDIT&studentId=0','MyWindow' ,400,400);">Add New
+            onclick="window.open('?action=EDIT&studentId=0','MyWindow' ,400,400); return false;">Add New
     </button>
-    <input type="hidden" name="action" id="delete" value="DELETE" disabled>
-    <button type="submit" name="delete" class="btn btn-secondary btm-sm" onchange="activateInput(name)">Delete
+    <input type="hidden" id="delete" name="action" value="DELETE" disabled>
+    <button type="submit" class="btn btn-secondary btm-sm" name="delete" onclick="activateInput(name)">Delete
     </button>
 </form>
 </body>

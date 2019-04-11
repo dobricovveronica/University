@@ -45,12 +45,12 @@ public class PersonDao {
         return persons;
     }
 
-    public void deletePerson(Person person) {
+    public void deletePerson(Long personId) {
         String sql = "DELETE FROM university.persons where id = ?";
 
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setLong(1, person.getId());
+            statement.setLong(1, personId);
             System.out.println(statement.toString());
             statement.execute();
 

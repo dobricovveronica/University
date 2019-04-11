@@ -40,12 +40,12 @@ public class LibraryAbonamentDao {
         return libraryAbonaments;
     }
 
-    public void deleteLibraryAbonament(LibraryAbonament libraryAbonament) {
+    public void deleteLibraryAbonament(Long libraryAbonamentId) {
         String sql = "DELETE FROM university.library_abonaments where id = ?";
 
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setLong(1, libraryAbonament.getId());
+            statement.setLong(1, libraryAbonamentId);
             System.out.println(statement.toString());
             statement.execute();
 
@@ -60,8 +60,12 @@ public class LibraryAbonamentDao {
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setString(1, libraryAbonament.getStatus());
-            statement.setDate(2, Date.valueOf(libraryAbonament.getStartDate()));
-            statement.setDate(3, Date.valueOf(libraryAbonament.getEndDate()));
+            if(!isNull(libraryAbonament.getStartDate())){
+                statement.setDate(2, Date.valueOf(libraryAbonament.getStartDate()));}
+            else {statement.setDate(2, null);}
+            if(!isNull(libraryAbonament.getStartDate())){
+                statement.setDate(3, Date.valueOf(libraryAbonament.getEndDate()));}
+            else {statement.setDate(3, null);}
             statement.setLong(4, libraryAbonament.getId());
             System.out.println(statement.toString());
             statement.execute();

@@ -40,12 +40,12 @@ public class AddressDao {
         return addresses;
     }
 
-    public void deleteAddress(Address address) {
+    public void deleteAddress(Long addressId) {
         String sql = "DELETE FROM university.addresses where id = ?";
 
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setLong(1, address.getId());
+            statement.setLong(1, addressId);
             System.out.println(statement.toString());
             statement.execute();
 

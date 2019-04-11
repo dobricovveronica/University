@@ -142,12 +142,12 @@ public class DisciplineDao {
         }
         return disciplines;
     }
-    public void addDisciplineToStudent(Student student) {
+    public void addDisciplineToStudent(Student student, Discipline discipline) {
         String sql = "INSERT INTO university.disciplines_to_students(student_id, discipline_id) VALUES(?, ?)";
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setLong(1, student.getId());
-            statement.setLong(2, 3L);
+            statement.setLong(2, discipline.getId());
             statement.execute();
         } catch (SQLException e) {
             e.printStackTrace();

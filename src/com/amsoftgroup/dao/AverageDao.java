@@ -77,7 +77,7 @@ public class AverageDao {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setLong(1, average.getStudent().getId());
             statement.setLong(2, average.getDiscipline().getId());
-            statement.setDouble(3, average.getValue());
+            statement.setDouble(3, 0);
             System.out.println(statement.toString());
             statement.execute();
 

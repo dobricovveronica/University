@@ -26,7 +26,7 @@ public class StudentServletFilter implements Filter {
     }
 
     public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws ServletException, IOException {
-        chain.doFilter(req, resp);
+
         HttpServletRequest request = (HttpServletRequest) req;
         if ("POST".equalsIgnoreCase(request.getMethod())) {
             String action = req.getParameter("action");
@@ -34,12 +34,13 @@ public class StudentServletFilter implements Filter {
             Mark mark = new Mark();
             Discipline discipline = new Discipline();
             Teacher teacher = new Teacher();
+
             switch (action) {
                 case "LIBRARY_ABONAMENT":
                     LibraryAbonament libraryAbonament = new LibraryAbonament();
                     libraryAbonament.setId(Long.parseLong(request.getParameter("abonamentId")));
                     libraryAbonament.setStatus(request.getParameter("status"));
-                    if (request.getParameter("start_date") != null){
+                    if (request.getParameter("start_date") != null) {
                         libraryAbonament.setStartDate(LocalDate.parse(String.valueOf(request.getParameter("start_date"))));
                     }
                     if (request.getParameter("end_date") != null) {
@@ -95,9 +96,10 @@ public class StudentServletFilter implements Filter {
                     student = buildStudent(request);
                     req.setAttribute("student", student);
                     break;
-
             }
         }
+
+        chain.doFilter(req, resp);
     }
 
     public void init(FilterConfig config) throws ServletException {
@@ -122,10 +124,9 @@ public class StudentServletFilter implements Filter {
         student.setGender(request.getParameter("gender").charAt(0));
         student.setMail(request.getParameter("mail"));
 
-        InputStream inputStream = null;
         Part filePart = request.getPart("image");
         if (filePart != null) {
-            inputStream = filePart.getInputStream();
+            InputStream inputStream = filePart.getInputStream();
             BufferedImage bufferedImage = ImageIO.read(inputStream);
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             ImageIO.write(bufferedImage, "jpg", byteArrayOutputStream);
@@ -135,6 +136,15 @@ public class StudentServletFilter implements Filter {
         group.setId(Long.parseLong(request.getParameter("group")));
         student.setGroup(group);
 
+        Set<Discipline> disciplines = new HashSet<>();
+        String[] disciplineId = request.getParameterValues("disciplineId[]");
+        for (int i = 0; i < disciplineId.length; i++) {
+            Discipline discipline = new Discipline();
+            discipline.setId((Long.parseLong(disciplineId[i])));
+            disciplines.add(discipline);
+        }
+        student.setDisciplines(disciplines);
+
         libraryAbonament.setStatus("None");
         student.setLibraryAbonament(libraryAbonament);
 
@@ -142,12 +152,13 @@ public class StudentServletFilter implements Filter {
         String[] phoneTypeId = request.getParameterValues("phoneType[]");
         String[] phoneId = request.getParameterValues("phoneId[]");
         String[] phoneValue = request.getParameterValues("phoneNumber[]");
-        for (int i = 0; i < phoneId.length; i++){
+        for (int i = 0; i < phoneId.length; i++) {
             Phone phone = new Phone();
             PhoneType phoneType = new PhoneType();
             phoneType.setId(Long.parseLong(phoneTypeId[i]));
-            if (!phoneId[i].equals("")){
-                phone.setId(Long.parseLong(phoneId[i]));}
+            if (!phoneId[i].equals("")) {
+                phone.setId(Long.parseLong(phoneId[i]));
+            }
             phone.setValue(phoneValue[i]);
             phone.setPhoneType(phoneType);
             phones.add(phone);

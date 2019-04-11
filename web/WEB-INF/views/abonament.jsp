@@ -20,24 +20,21 @@
     <script src="http://malsup.github.com/jquery.form.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js"></script>
     <script>
-        function exit() {
-            // document.getElementById('myForm').submit();
-            setTimeout('alert("Hello! I am an alert box!!")', 3000);
-            return false;
-        }
 
         function inactive() {
-            var el = document.getElementById("status").value;
+            var el = document.getElementById("statusId").value;
             var sD = document.getElementById("startDate");
             var eD = document.getElementById("endDate");
+            var sV = sD.value;
             if (el === "None") {
                 sD.disabled = true;
                 eD.disabled = true;
-                sD.value = 'null';
-                eD.value = 'null';
+                sD.value = '';
+                eD.value = '';
             } else {
                 sD.disabled = false;
                 eD.disabled = false;
+                sD.value = sV;
             }
         }
     </script>
@@ -46,15 +43,16 @@
 <%Student student = (Student) request.getAttribute("student"); %>
 <h1><%=student.getFirstName()%> <%=student.getLastName()%> - student abonament</h1>
 
-<form method="post" id="myForm">
+<form method="post" action="student" id="updateLibraryAbonament">
     <%java.text.DateFormat df = new java.text.SimpleDateFormat("MM/dd/yyyy"); %>
+    <input type="hidden" name="action" value="LIBRARY_ABONAMENT">
     <input type="hidden" name="abonamentId" value="<%=student.getLibraryAbonament().getId()%>">
     <div class="form-group row">
         <div class="col-2">
             <label class="col-sm-2 col-form-label">Status:</label>
         </div>
         <div class="col-3">
-            <select name="status" id="statusId" class="form-control">
+            <select name="status" id="statusId" class="form-control" onchange="inactive()" required>
                 <% Set<LibraryAbonament> libraryAbonaments = (Set<LibraryAbonament>) request.getAttribute("libraryAbonaments");
                     for (LibraryAbonament libraryAbonament : libraryAbonaments) {
                 %>
@@ -63,7 +61,6 @@
                 </option>
                 <%}%>
             </select>
-
         </div>
     </div>
     <div class="form-group row">
@@ -87,19 +84,22 @@
     <div class="form-row">
         <div class="col-2"></div>
         <div class="col-2">
-            <button type="submit" class="btn btn-secondary btm-sm" >Save</button>
+            <button type="submit" class="btn btn-secondary btm-sm">Save</button>
 
             <button type="button" onclick="window.close()" class="btn btn-secondary btm-sm">Cancel</button>
         </div>
     </div>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js"></script>
+    <script src="http://malsup.github.com/jquery.form.js"></script>
     <script>
-    $(document).ready(function () {
-        $('#myForm').ajaxForm(function () {
-            window.opener.location.reload();
-            window.close();
+        $(document).ready(function () {
+            $('#updateLibraryAbonament').ajaxForm(function () {
+                // alert("Thank you for your comment!");
+                window.opener.location.reload();
+                window.self.close();
+            });
         });
-    });
-</script>
+    </script>
 </form>
 </body>
 </html>
