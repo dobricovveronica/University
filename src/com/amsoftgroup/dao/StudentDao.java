@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 public class StudentDao {
 
@@ -177,14 +178,21 @@ public class StudentDao {
         }
         student.setLibraryAbonament(libraryAbonament);
 
-        student.setPhones(new PhoneDao(connection).getPhonesById(student.getId()));
+        Set<Phone> phones = new PhoneDao(connection).getPhonesById(student.getId());
+        if (phones != null) {
+            student.setPhones(phones);
+        }
 
         Group group = new Group();
         group.setId(Long.parseLong(rs.getString("gid")));
         group.setName(rs.getString("gname"));
         student.setGroup(group);
 
-        student.setDisciplines(new DisciplineDao(connection).getDisciplineById(student.getId()));
+        Set<Discipline> disciplines = new DisciplineDao(connection).getDisciplineById(student.getId());
+        if (disciplines != null) {
+            student.setDisciplines(disciplines);
+        }
+
         Double summ = 0.0;
         for (Discipline discipline : student.getDisciplines()){
             summ += discipline.getAverage().getValue();

@@ -30,7 +30,11 @@
                 el3.disabled = false;
             }
         }
-
+        function confSubmit(actionName) {
+            if (confirm("Are you want to delete student(s)?")) {
+                activateInput(actionName);
+            }
+        }
         function checkAll(source) {
             var checkboxes = document.querySelectorAll('input[type="checkbox"]');
             for (var i = 0; i < checkboxes.length; i++) {
@@ -38,6 +42,7 @@
                     checkboxes[i].checked = source.checked;
             }
         }
+
     </script>
 </head>
 
@@ -167,7 +172,7 @@
         %>
         <tr>
             <th scope="col">ID</th>
-            <td><input type="checkbox" onclick="checkAll(this)"></td>
+            <td><input type="checkbox" onclick="checkAll(this)" onchange="document.getElementById('deleteButton').disabled = false;"></td>
             <th scope="col">Photo</th>
             <th scope="col">Name</th>
             <th scope="col">Birth Day</th>
@@ -188,7 +193,7 @@
             <td>
                 <%=student.getId()%>
             </td>
-            <td><input type="checkbox" name="check[]" id="myCheck" value="<%=student.getId()%>"
+            <td><input type="checkbox" name="check[]" id="myCheck" value="<%=student.getId()%>" onchange="document.getElementById('deleteButton').disabled = false;"
                        onclick="idChecked(value)"></td>
             <%
                 byte[] img = student.getPicture();
@@ -208,10 +213,11 @@
             <td><%=student.getAddresses().getCity() + " " + student.getAddresses().getAddress()%>
             </td>
             <td><%
+                if (student.getPhones() != null){
                 for (Phone phone : student.getPhones()) {%>
                 <%=phone.getPhoneType().getName()%>:
                 <%=phone.getValue()%><br>
-                <%}%>
+                <%}}%>
             </td>
             <td><a href="#" style="color: #221fff;"
                    onclick="window.open('?action=LIBRARY_ABONAMENT&studentId='+ <%=student.getId()%>,'MyWindow', 'width=900, height=400');
@@ -225,9 +231,10 @@
             <td><%=student.getGroup().getName()%>
             </td>
             <td><%
+                if (student.getDisciplines() != null){
                 for (Discipline discipline : student.getDisciplines()) {%>
                 <%=discipline.getTitle()%>: <%=discipline.getAverage().getValue()%><br>
-                <%}%>
+                <%}}%>
             </td>
             <td>
                 <button type="submit" class="btn btn-success" name="edit"
@@ -248,7 +255,7 @@
             onclick="window.open('?action=EDIT&studentId=0','MyWindow' ,400,400); return false;">Add New
     </button>
     <input type="hidden" id="delete" name="action" value="DELETE" disabled>
-    <button type="submit" class="btn btn-secondary btm-sm" name="delete" onclick="activateInput(name)">Delete
+    <button type="submit" class="btn btn-secondary btm-sm" name="delete" id="deleteButton" onclick="confSubmit(name)" disabled>Delete
     </button>
 </form>
 </body>

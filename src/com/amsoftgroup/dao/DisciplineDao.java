@@ -121,20 +121,21 @@ public class DisciplineDao {
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
                 Discipline discipline = new Discipline();
-                discipline.setId(Long.parseLong(rs.getString("did")));
-                discipline.setTitle(rs.getString("title"));
+                if (rs.getString("did") != null) {
+                    discipline.setId(Long.parseLong(rs.getString("did")));
+                    discipline.setTitle(rs.getString("title"));
 
-                Teacher teacher = new Teacher();
-                teacher.setId(Long.parseLong(rs.getString("tid")));
+                    Teacher teacher = new Teacher();
+                    teacher.setId(Long.parseLong(rs.getString("tid")));
 
-                discipline.setTeacher(new TeacherDao(connection).getTeacherById(teacher.getId()));
-                Set<Mark> marks = new MarkDao(connection).getMarkByDisciplineId(discipline.getId(), studentId);
-                discipline.setMarks((HashSet<Mark>) marks);
+                    discipline.setTeacher(new TeacherDao(connection).getTeacherById(teacher.getId()));
+                    Set<Mark> marks = new MarkDao(connection).getMarkByDisciplineId(discipline.getId(), studentId);
+                    discipline.setMarks((HashSet<Mark>) marks);
 
-                Average average = new AverageDao(connection).getAverageByDiscipline(discipline.getId(), studentId);
-                discipline.setAverage(average);
-                disciplines.add(discipline);
-
+                    Average average = new AverageDao(connection).getAverageByDiscipline(discipline.getId(), studentId);
+                    discipline.setAverage(average);
+                    disciplines.add(discipline);
+                }
 
             }
         } catch (SQLException e) {
@@ -144,6 +145,18 @@ public class DisciplineDao {
     }
     public void addDisciplineToStudent(Student student, Discipline discipline) {
         String sql = "INSERT INTO university.disciplines_to_students(student_id, discipline_id) VALUES(?, ?)";
+        try {
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setLong(1, student.getId());
+            statement.setLong(2, discipline.getId());
+            statement.execute();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deleteDisciplineToStudent(Student student, Discipline discipline) {
+        String sql = "delete from university.disciplines_to_students where student_id = ? and discipline_id = ?";
         try {
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setLong(1, student.getId());

@@ -97,7 +97,6 @@ public class StudentService {
         }
         studentDao.insertStudent(student);
         for (Discipline discipline : student.getDisciplines()) {
-
             Average average = new Average();
             average.setDiscipline(discipline);
             average.setStudent(student);
@@ -115,26 +114,74 @@ public class StudentService {
         Set<Phone> phones = new HashSet<>();
         List<Long> oldPhonesId = new ArrayList<>();
         List<Long> newPhonesId = new ArrayList<>();
-        for (Phone phone : student.getPhones()) {
-            for (Phone oldPhone : oldPhones) {
-                if (phone.getId() == 0) {
-                    phone.setId(phoneDao.insertPhone(phone));
-                    phoneDao.addPhoneToPerson(phone, student);
+
+        if (student.getPhones() != null) {
+            for (Phone phone : student.getPhones()) {
+                if (oldPhones.size() != 0) {
+                    for (Phone oldPhone : oldPhones) {
+                        if (phone.getId() == 0) {
+                            phone.setId(phoneDao.insertPhone(phone));
+                            phoneDao.addPhoneToPerson(phone, student);
+                        }
+                        if (phone.getId() == oldPhone.getId()) {
+                            phoneDao.updatePhone(phone);
+                        }
+                        phones.add(phone);
+                        oldPhonesId.add(oldPhone.getId());
+                    }
+                } else {
+                    if (phone.getId() == 0) {
+                        phone.setId(phoneDao.insertPhone(phone));
+                        phoneDao.addPhoneToPerson(phone, student);
+                    }
                 }
-                if (phone.getId() == oldPhone.getId()) {
-                    phoneDao.updatePhone(phone);
-                }
-                phones.add(phone);
-                oldPhonesId.add(oldPhone.getId());
+                newPhonesId.add(phone.getId());
             }
-            newPhonesId.add(phone.getId());
+            List<Long> diferencePhone = new ArrayList<>(oldPhonesId);
+            diferencePhone.removeAll(newPhonesId);
+            for (Long ph : diferencePhone) {
+                Phone phon = new Phone();
+                phon.setId(ph);
+                phoneDao.deletePhone(phon);
+            }
+        }else {
+            for (Phone phone : oldPhones){
+                phoneDao.deletePhone(phone);
+            }
         }
-        List<Long> diff = new ArrayList<>(oldPhonesId);
-        diff.removeAll(newPhonesId);
-        for (Long ph : diff) {
-            Phone phon = new Phone();
-            phon.setId(ph);
-            phoneDao.deletePhone(phon);
+
+        Set<Discipline> oldDisciplines = disciplineDao.getDisciplineById(student.getId());
+        List<Long> oldDisciplineId = new ArrayList<>();
+        List<Long> newDisciplineId = new ArrayList<>();
+
+        if (student.getDisciplines() != null) {
+            if (oldDisciplines.size() != 0){
+                for (Discipline oldDiscipline : oldDisciplines){
+                    oldDisciplineId.add(oldDiscipline.getId());
+                    oldDiscipline.setAverage(averageDao.getAverageByDiscipline(oldDiscipline.getId(), student.getId()));
+                }
+            }
+            for (Discipline discipline : student.getDisciplines()){
+                newDisciplineId.add(discipline.getId());
+            }
+            List<Long> diferenceDiscipline = new ArrayList<>(oldDisciplineId);
+            diferenceDiscipline.removeAll(newDisciplineId);
+            for (Long disc : diferenceDiscipline){
+                Discipline dis = new Discipline();
+                dis.setId(disc);
+                disciplineDao.deleteDisciplineToStudent(student, dis);
+            }
+            List<Long> diference = new ArrayList<>(newDisciplineId);
+            diference.removeAll(oldDisciplineId);
+            for (Long d : diference){
+                Discipline dd = new Discipline();
+                dd.setId(d);
+                Average average = new Average();
+                average.setDiscipline(dd);
+                average.setStudent(student);
+                averageDao.insertAverage(average);
+                disciplineDao.addDisciplineToStudent(student, dd);
+            }
         }
 
         studentDao.updateStudent(student);

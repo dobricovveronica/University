@@ -27,47 +27,47 @@ public class StudentServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         String action = request.getParameter("action");
         RequestDispatcher requestDispatcher;
-
-        switch (action) {
-            case "MARK":
-                Mark mark = (Mark) request.getAttribute("mark");
-                studentService.addMarkByStudentId(mark);
-                break;
-            case "LIBRARY_ABONAMENT":
-                LibraryAbonament libraryAbonament = (LibraryAbonament) request.getAttribute("libraryAbonament");
-                studentService.updateLibraryAbonamentByStudentId(libraryAbonament);
-                break;
-            case "EDIT":
-                Student student = (Student) request.getAttribute("student");
-                if (student.getId() != 0) {
-                    studentService.updateStudent(student);
-                } else {
-                    studentService.addNewStudent(student);
-                }
-                break;
-            case "DELETE":
-                String[] studentsId;
-                studentsId = request.getParameterValues("check[]");
-                studentService.deleteStudent(studentsId);
-                response.sendRedirect("/student/");
-                break;
-            case "SEARCH":
-                StudentFilter studentFilter = (StudentFilter) request.getAttribute("studentFilter");
-                request.setAttribute("studentFilter", studentFilter);
-                Set<Student> students = studentService.searchStudents(studentFilter);
-                request.setAttribute("students", students);
-                Set<Group> groups = studentService.getAllGroups();
-                request.setAttribute("groups", groups);
-                Set<Discipline> disciplines = studentService.getAllDisciplines();
-                request.setAttribute("disciplines", disciplines);
-                requestDispatcher = getServletContext().getRequestDispatcher("/WEB-INF/views/list.jsp");
-                requestDispatcher.forward(request, response);
-                break;
-            case "RESET":
-                response.sendRedirect("/student/");
-                break;
-        }
-
+        if (action != null) {
+            switch (action) {
+                case "MARK":
+                    Mark mark = (Mark) request.getAttribute("mark");
+                    studentService.addMarkByStudentId(mark);
+                    break;
+                case "LIBRARY_ABONAMENT":
+                    LibraryAbonament libraryAbonament = (LibraryAbonament) request.getAttribute("libraryAbonament");
+                    studentService.updateLibraryAbonamentByStudentId(libraryAbonament);
+                    break;
+                case "EDIT":
+                    Student student = (Student) request.getAttribute("student");
+                    if (student.getId() != 0) {
+                        studentService.updateStudent(student);
+                    } else {
+                        studentService.addNewStudent(student);
+                    }
+                    break;
+                case "DELETE":
+                    String[] studentsId;
+                    studentsId = request.getParameterValues("check[]");
+                    studentService.deleteStudent(studentsId);
+                    response.sendRedirect("/student/");
+                    break;
+                case "SEARCH":
+                    StudentFilter studentFilter = (StudentFilter) request.getAttribute("studentFilter");
+                    request.setAttribute("studentFilter", studentFilter);
+                    Set<Student> students = studentService.searchStudents(studentFilter);
+                    request.setAttribute("students", students);
+                    Set<Group> groups = studentService.getAllGroups();
+                    request.setAttribute("groups", groups);
+                    Set<Discipline> disciplines = studentService.getAllDisciplines();
+                    request.setAttribute("disciplines", disciplines);
+                    requestDispatcher = getServletContext().getRequestDispatcher("/WEB-INF/views/list.jsp");
+                    requestDispatcher.forward(request, response);
+                    break;
+                case "RESET":
+                    response.sendRedirect("/student/");
+                    break;
+            }
+        }else  response.sendRedirect("/student/");
     }
 
 

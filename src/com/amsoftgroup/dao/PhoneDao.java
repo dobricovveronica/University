@@ -107,13 +107,15 @@ public class PhoneDao {
             ResultSet rs = statement.executeQuery();
             while (rs.next()) {
                 Phone phone = new Phone();
-                phone.setId(Long.parseLong(rs.getString("phid")));
-                phone.setValue(rs.getString("phvalue"));
-                PhoneType phoneType = new PhoneType();
-                phoneType.setId(Long.parseLong(rs.getString("ptid")));
-                phoneType.setName(rs.getString("ptname"));
-                phone.setPhoneType(phoneType);
-                phones.add(phone);
+                if (rs.getString("phid") != null) {
+                    phone.setId(Long.parseLong(rs.getString("phid")));
+                    phone.setValue(rs.getString("phvalue"));
+                    PhoneType phoneType = new PhoneType();
+                    phoneType.setId(Long.parseLong(rs.getString("ptid")));
+                    phoneType.setName(rs.getString("ptname"));
+                    phone.setPhoneType(phoneType);
+                    phones.add(phone);
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();

@@ -192,14 +192,14 @@
                         required>
                     <% Set<Discipline> disciplines = (Set<Discipline>) request.getAttribute("disciplines");
                         ArrayList<Long> studentDisciplineId = new ArrayList<>();
-                        if (studentId != 0) {
+                        if (studentId != 0 && student.getDisciplines() != null) {
                             for (Discipline studentDiscipline : student.getDisciplines()) {
                                 studentDisciplineId.add(studentDiscipline.getId());
                             }
                         }
                         for (Discipline discipline : disciplines) {
                     %>
-                    <option <%=(studentId != 0) ? ((studentDisciplineId.contains(discipline.getId())) ? "selected" : "") : ""%>
+                    <option <%=(studentId != 0 && student.getDisciplines() != null) ? ((studentDisciplineId.contains(discipline.getId())) ? "selected" : "") : ""%>
                             value="<%=discipline.getId()%>"><%=discipline.getTitle()%>
                     </option>
                     <%}%>
@@ -214,7 +214,7 @@
                 <label class="col-sm-2 col-form-label">Phone(s):</label>
             </div>
             <% Set<Phone> phones = new HashSet<>();
-                if (studentId != 0) {
+                if (studentId != 0 && student.getPhones().size() != 0) {
                     phones = (Set<Phone>) student.getPhones();
                 }
                 ArrayList<Long> phoneTypeId = new ArrayList<>();
@@ -229,9 +229,9 @@
                 do {%>
             <div class="col-1">
                 <select class="form-control" name="phoneType[]" required>
-                    <option <%=(studentId == 0) ? "hidden" : ""%> selected>Select phone type</option>
+                    <option <%=(studentId == 0 || student.getPhones().size() != 0) ? "hidden" : ""%> selected>Select phone type</option>
                     <% for (PhoneType phoneType : phoneTypes) {%>
-                    <option <%=(studentId != 0) ? ((phoneTypeId.get(count) == phoneType.getId()) ? "selected" : "") : ""%>
+                    <option <%=(studentId != 0 && student.getPhones().size() != 0) ? ((phoneTypeId.get(count) == phoneType.getId()) ? "selected" : "") : ""%>
                             value="<%=phoneType.getId()%>"><%=phoneType.getName()%>
                     </option>
                     </option>
@@ -240,9 +240,9 @@
             </div>
             <div class="col-1.4">
                 <input type="hidden" class="form-control" name="phoneId[]"
-                       value="<%=(studentId!=0)?phoneId.get(count):""%>">
+                       value="<%=(studentId!=0 && student.getPhones().size() != 0)?phoneId.get(count):""%>">
                 <input type="text" class="form-control" placeholder="Phone number" name="phoneNumber[]"
-                       value="<%=(studentId!=0)?phoneValue.get(count):""%>" required>
+                       value="<%=(studentId!=0 && student.getPhones().size() != 0)?phoneValue.get(count):""%>" required>
             </div>
             <div class="col-1.5" name="buttons">
                 <button type="button" class="btn btn-success" onclick="duplicate(this)">Add</button>
@@ -259,7 +259,7 @@
             %>
         </div>
     </div>
-    <br>
+    <br><br>
     <div class="form-row">
         <div class="col-6"></div>
         <div class="col-2">
